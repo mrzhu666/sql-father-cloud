@@ -4,29 +4,29 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.mrzhuyk</groupId>
-        <artifactId>sql-father-cloud</artifactId>
+        <groupId>org.mrzhuyk.starter</groupId>
+        <artifactId>sql-father-starter</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>org.mrzhuyk.modules</groupId>
-    <artifactId>sql-father-modules</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>user-module</module>
-        <module>gateway-module</module>
-    </modules>
+    <artifactId>sql-father-spring-starter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.common</groupId>
+            <artifactId>sql-father-core</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
 </project>
