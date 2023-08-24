@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.exception.BizException;
 import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
+import org.mrzhuyk.sqlfather.user.constant.UserConstant;
 import org.mrzhuyk.sqlfather.user.po.User;
 import org.mrzhuyk.sqlfather.user.service.UserService;
 import org.mrzhuyk.sqlfather.user.mapper.UserMapper;
@@ -108,22 +109,64 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userPassword", encryptPassword);
         User user = this.getOne(queryWrapper);
         
+        if (user == null || user.getId() == null) {
+            throw new BizException(ErrorEnum.PARAMS_ERROR,"用户不存在或密码错误");
+        }
+        //记录用户登录态
+        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE,user);
         return user;
     }
     
+    /**
+     * 获取当前用户
+     * @param request
+     * @return
+     */
     @Override
     public User getLoginUser(HttpServletRequest request) {
-        return null;
+        //先判断是否已经登录
+        User currentUser = (User)request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new BizException(ErrorEnum.NOT_LOGIN_ERROR);
+        }
+        
+        // 为什么要重新查询用户
+        // 从数据库查询（追求性能的话可以注释，直接走缓存）
+        
+        // 现在还有redis分布式session，在session存，相当于在redis了吧？
+        
+        long userId = currentUser.getId();
+        currentUser = this.getById(userId);
+        if (currentUser == null) {
+            throw new BizException(ErrorEnum.NOT_LOGIN_ERROR);
+        }
+        return currentUser;
     }
     
+    /**
+     * 判断是否为管理员
+     * @param request
+     * @return
+     */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
-        return false;
+        User user = (User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        return user!=null && UserConstant.ADMIN_ROLE.equals(user.getUserRole());
     }
     
+    /**
+     * 用户注册
+     * @param request
+     * @return
+     */
     @Override
     public boolean userLogout(HttpServletRequest request) {
-        return false;
+        if (request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE) == null) {
+            throw new BizException(ErrorEnum.OPERATION_ERROR, "未登录");
+        }
+        //移除登录态
+        request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
+        return true;
     }
 }
 

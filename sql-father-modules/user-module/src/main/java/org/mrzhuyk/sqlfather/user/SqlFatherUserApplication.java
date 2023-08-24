@@ -1,12 +1,12 @@
 package org.mrzhuyk.sqlfather.user;
 
 
-import org.mybatis.spring.annotation.MapperScan;
+import org.mrzhuyk.sqlfather.core.annotation.EnableCustomConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("org.mrzhuyk.sqlfather.user.mapper")
+@EnableCustomConfig
 public class SqlFatherUserApplication {
     public static void main(String[] args) {
         SpringApplication.run(SqlFatherUserApplication.class, args);

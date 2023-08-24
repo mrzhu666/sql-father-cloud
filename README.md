@@ -8,7 +8,7 @@
 
 
 
-
+每个微服务启动类都要固定在org.mrzhuyk.sqlfather
 
 
 
@@ -21,3 +21,22 @@ groupID设置的问题
 common,starter->service->module->
 
 common->api
+
+
+
+
+
+# 模块
+
+
+
+sql-father-redis-starter：redis实现分布式session
+
+
+
+
+
+# 权限系统
+
+
+

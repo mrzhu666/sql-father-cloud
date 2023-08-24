@@ -1,3 +1,5 @@
+
+
 spring:
   application:
     name: sql-father-user-server
@@ -17,6 +19,9 @@ spring:
             group: DEFAULT_GROUP
             refresh: true
           - data-id: share-nacos.yml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: share-redis.yml
             group: DEFAULT_GROUP
             refresh: true
 

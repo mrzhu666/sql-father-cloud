@@ -4,20 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.mrzhuyk</groupId>
-        <artifactId>sql-father-cloud</artifactId>
+        <groupId>org.mrzhuyk.starter</groupId>
+        <artifactId>sql-father-starter</artifactId>
         <version>1.0.0</version>
     </parent>
-    <groupId>org.mrzhuyk.starter</groupId>
-    <artifactId>sql-father-starter</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>sql-father-mybatis-starter</module>
-        <module>sql-father-spring-starter</module>
-        <module>sql-father-nacos-starter</module>
-        <module>sql-father-knife4j-starter</module>
-        <module>sql-father-redis-starter</module>
-    </modules>
+
+    <artifactId>sql-father-redis-starter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -25,5 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--session-redis-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

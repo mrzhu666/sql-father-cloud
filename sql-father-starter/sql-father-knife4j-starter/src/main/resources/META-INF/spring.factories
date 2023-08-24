@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.mrzhuyk.sqlfather.knife4j.config.Knife4jConfiguration
