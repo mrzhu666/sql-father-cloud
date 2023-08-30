@@ -1,6 +1,6 @@
 package org.mrzhuyk.sqlfather.user.service;
 
-import org.mrzhuyk.sqlfather.user.po.User;
+import org.mrzhuyk.sqlfather.sql.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
 package org.mrzhuyk.sqlfather.user.mapper;
 
-import org.mrzhuyk.sqlfather.user.po.User;
+import org.mrzhuyk.sqlfather.sql.po.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

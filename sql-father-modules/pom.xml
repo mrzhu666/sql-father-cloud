@@ -16,6 +16,11 @@
         <module>user-module</module>
         <module>gateway-module</module>
         <module>knife4j-module</module>
+        <module>sql-module</module>
+        <module>dict-module</module>
+        <module>field-module</module>
+        <module>table-module</module>
+        <module>report-module</module>
     </modules>
 
     <properties>

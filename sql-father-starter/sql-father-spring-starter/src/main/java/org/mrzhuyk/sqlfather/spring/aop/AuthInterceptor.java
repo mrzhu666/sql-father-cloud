@@ -10,14 +10,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
 import org.mrzhuyk.sqlfather.core.exception.BizException;
 import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
-import org.mrzhuyk.sqlfather.user.constant.UserConstant;
-import org.mrzhuyk.sqlfather.user.po.User;
+import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
+import org.mrzhuyk.sqlfather.sql.po.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;

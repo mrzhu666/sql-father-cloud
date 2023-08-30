@@ -14,6 +14,11 @@
     <packaging>pom</packaging>
     <modules>
         <module>user-service</module>
+        <module>sql-service</module>
+        <module>dict-service</module>
+        <module>field-service</module>
+        <module>table-service</module>
+        <module>report-service</module>
     </modules>
 
     <properties>

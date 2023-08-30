@@ -15,6 +15,11 @@
     <modules>
         <module>user-common</module>
         <module>sql-father-core</module>
+        <module>sql-common</module>
+        <module>dict-common</module>
+        <module>field-common</module>
+        <module>table-common</module>
+        <module>report-common</module>
     </modules>
 
     <properties>
