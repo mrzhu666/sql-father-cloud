@@ -42,7 +42,7 @@ public enum MockTypeEnum {
      * @param value
      * @return
      */
-    public MockTypeEnum getEnumByValue(String value) {
+    public static MockTypeEnum getEnumByValue(String value) {
         if (StringUtils.isBlank(value)) {
             return null;
         }

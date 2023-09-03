@@ -1,11 +1,14 @@
 package org.mrzhuyk.sqlfather.sql.vo;
 
+import lombok.Data;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+
+@Data
 public class GenerateVO implements Serializable {
     private TableSchema tableSchema;
     

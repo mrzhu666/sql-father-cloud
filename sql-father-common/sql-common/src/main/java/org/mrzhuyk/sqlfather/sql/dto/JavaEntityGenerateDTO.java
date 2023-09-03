@@ -15,7 +15,7 @@ public class JavaEntityGenerateDTO {
     /**
      * 类名
      */
-    private String classname;
+    private String className;
     
     /**
      * 类注释
@@ -31,6 +31,7 @@ public class JavaEntityGenerateDTO {
     /**
      * 列信息
      */
+    @Data
     public static class FieldDTO{
         /**
          * 字段名

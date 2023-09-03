@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 表概要
+ */
 @Data
 public class TableSchema {
     

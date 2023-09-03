@@ -1,6 +1,6 @@
 package org.mrzhuyk.sqlfather.core.generator.dialect;
 
-public class MySQLSQLDialect implements SQLDialect {
+public class MySQLDialect implements SQLDialect {
     @Override
     public String wrapFieldName(String fieldName) {
         return null;

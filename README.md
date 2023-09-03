@@ -76,7 +76,7 @@ auroraBackend
 
 # 模块
 
-## 用户模块
+## 用户模块(User)
 
 用户注册、登录、注销、获取。
 
@@ -84,86 +84,39 @@ auroraBackend
 
 
 
-## SQL模块
+## SQL模块(SQL)
 
 根据表信息、字段信息、选择的词典生成对应的代码
 
-
-
 sql-father-redis-starter：redis实现分布式session
 
-
-
 利用工厂模式封装不同种类的生成算法。包括以下几种生成算法：
-
-1. 
-
-
-
-## 核心功能模块
-
-原单体项目核心类为 GeneratorFacade，它根据表信息生成所有类型代码。里面另外有两个方法用于验证数据，可以剥离到其它类。主要是核心方法里某个数据模拟类，耦合词典服务，调用去查询词典数据库。
-
-```java
-public class DictDataGenerator implements DataGenerator {
-    
-    private static final DictService dictService = SpringContextUtils.getBean(DictService.class);
-
-    private final static Gson GSON = new Gson();
-}
-
-```
-
-为解耦服务，有两个方法一是该生成类做成微服务，提供接口给其它微服务调用。二是做成模块，导入到各自微服务调用。
-
-
-
-
-
-修改接口添加一个默认方法，提供给词典生成方法。然后其它服务调用方法时，远程调用词典服务查询词典，然后传入改词典参数
-
-
-
-
-
-
-
-```java
-public interface DataGenerator {
-    Dict dict = null;
-    
-    /**
-     * 生成
-     *
-     * @param field 字段信息
-     * @param rowNum 行数
-     * @return 生成的数据列表
-     */
-    List<String> doGenerate(Field field, int rowNum);
-    
-    /**
-     * 提供给词典生成方法使用，传入词典参数
-     * @param dict
-     */
-    public default void setDict(Dict dict) {
-    }
-}
-
-```
 
 
 
 # 核心功能
 
+不同的SQL数据库的语法规则有略微差距，称之为sql方言，这里设计工厂模式生成不同的方言类，再采用双重校验锁设计工厂，可以保证方言类都是单例。
+
 ## SQL代码生成
 
-不同的SQL数据库的语法规则有略微差距，称之为sql方言，这里设计工厂模式生成不同的方言类，再采用双重校验锁设计工厂，可以保证方言类都是单例。
+原单体项目核心类为 GeneratorFacade，门面模式，统一生成，集中数据的生成器。它根据表信息生成所有类型代码，返回实体类GenerateVO，包括SQL语句、java实体代码、typescript接口代码，并且都有相应的数据模拟代码。另外有两个方法用于验证数据，可以剥离到其它类。主要是核心方法里某个数据模拟类，参杂对其它表的查询。耦合词典服务，调用去查询词典数据库。
+
+为解耦服务，有两个方法一是该生成类做成微服务，提供接口给其它微服务调用。二是做成模块，导入到各自微服务调用。这里采用的是做成模块提供给微服务采用。
+
+DictDataGenerator 类是模拟数据生成的其中方法之一，需要去查询词典数据库。查看代码发现只使用了词典的content字符串，现改造成在controller层预处理所有的field，远程调用词典方法获取词典，将mockparam修改成词典的content，DictDataGenerator 直接使用mockparam。
+
+TableSchemaBuilder 表概要生成器，里面`buildFromAuto`方法需要去查询字段数据库，该方法根据名称模糊查询字段数据库。现改造成在controller层远程调用字段服务获取字段数据，再传入字段到`buildFromAuto`中。
+
+
+
+
 
 
 
 # 权限系统
 
-## 
+##  
 
 
 

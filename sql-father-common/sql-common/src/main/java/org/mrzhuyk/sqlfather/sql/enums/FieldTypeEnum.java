@@ -51,7 +51,7 @@ public enum FieldTypeEnum {
      * @param value
      * @return
      */
-    public FieldTypeEnum getEnumByValue(String value) {
+    public static FieldTypeEnum getEnumByValue(String value) {
         if (StringUtils.isBlank(value)) {
             return null;
         }

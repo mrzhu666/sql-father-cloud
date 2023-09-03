@@ -16,16 +16,14 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.mrzhuyk.sqlfather.core.enums.MockTypeEnum;
 import org.mrzhuyk.sqlfather.core.exception.BizException;
 import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
-import org.mrzhuyk.sqlfather.core.generator.dialect.MySQLSQLDialect;
+import org.mrzhuyk.sqlfather.core.generator.dialect.MySQLDialect;
+import org.mrzhuyk.sqlfather.field.po.FieldInfo;
 import org.mrzhuyk.sqlfather.sql.enums.FieldTypeEnum;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -34,13 +32,12 @@ import java.util.stream.Collectors;
  * 表概要生成器
  *      根据一些信息构建填充表
  */
-@Component
 @Slf4j
 public class TableSchemaBuilder {
     private final static Gson GSON = new Gson();
     
     
-    private static final MySQLSQLDialect sqlDialect=new MySQLSQLDialect();
+    private static final MySQLDialect sqlDialect=new MySQLDialect();
     
     /**
      * 日期格式
@@ -49,13 +46,36 @@ public class TableSchemaBuilder {
     
     /**
      * 智能构建
-     *      根据输入的名称，自动导入可能字段，即自动填充字段
-     *      字段服务
-     * @param content
+     *      根据输入的名称，自动导入可能的字段，即自动填充字段
+     *      字段服务传入参数
+     * @param words
+     * @param fieldInfoList 字段数据
      * @return
      */
-    public static TableSchema buildFromAuto(String content) {
-        return null;
+    public static TableSchema buildFromAuto(String[] words, List<FieldInfo> fieldInfoList) {
+        // 名称 => 字段信息
+        Map<String, List<FieldInfo>> nameFieldInfoMap = fieldInfoList.stream().collect(Collectors.groupingBy(FieldInfo::getName));
+        
+        // 字段名称 => 字段信息
+        Map<String, List<FieldInfo>> fieldNameFieldInfoMap = fieldInfoList.stream().collect(Collectors.groupingBy(FieldInfo::getFieldName));
+        
+        TableSchema tableSchema = new TableSchema();
+        tableSchema.setTableName("my_table");
+        tableSchema.setTableComment("自动生成的表");
+        
+        List<TableSchema.Field> fieldList = new ArrayList<>();
+        for (String word : words) {
+            TableSchema.Field field;
+            List<FieldInfo> infoList = Optional.ofNullable(nameFieldInfoMap.get(word)).orElse(fieldNameFieldInfoMap.get(word));
+            if (CollectionUtils.isNotEmpty(infoList)) {
+                field = GSON.fromJson(infoList.get(0).getContent(), TableSchema.Field.class);
+            } else {
+                field = getDefaultField(word);
+            }
+            fieldList.add(field);
+        }
+        tableSchema.setFieldList(fieldList);
+        return tableSchema;
     }
     
     

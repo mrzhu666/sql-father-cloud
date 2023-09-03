@@ -15,7 +15,7 @@ public class SQLDialectFactory {
     
     /**
      * 获取方言实例
-     * @param className
+     * @param className 类名
      * @return
      */
     public static SQLDialect getDialect(String className) {
