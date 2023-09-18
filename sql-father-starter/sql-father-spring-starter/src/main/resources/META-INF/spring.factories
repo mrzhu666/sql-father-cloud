@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.mrzhuyk.sqlfather.spring.exception.GlobalExceptionHandler,\
-org.mrzhuyk.sqlfather.spring.aop.AuthInterceptor
+org.mrzhuyk.sqlfather.spring.aop.AuthInterceptor,\
+org.mrzhuyk.sqlfather.spring.config.FeignConfig

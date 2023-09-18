@@ -27,7 +27,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict>
     private final static Gson GSON = new Gson();
     
     /**
-     * 校验添加词典请求参数
+     * 校验添加词典的请求参数
      * @param dict
      * @param add  是否为创建校验
      */

@@ -22,5 +22,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.starter</groupId>
+            <artifactId>sql-father-mybatis-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

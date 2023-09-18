@@ -17,10 +17,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>field-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>user-api</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>dict-api</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -45,12 +56,6 @@
             <groupId>org.mrzhuyk.starter</groupId>
             <artifactId>sql-father-redis-starter</artifactId>
             <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mrzhuyk.api</groupId>
-            <artifactId>user-api</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
 
     </dependencies>

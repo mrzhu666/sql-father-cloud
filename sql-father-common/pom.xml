@@ -14,12 +14,13 @@
     <packaging>pom</packaging>
     <modules>
         <module>user-common</module>
-        <module>sql-father-core</module>
+        <module>core-common</module>
         <module>sql-common</module>
         <module>dict-common</module>
         <module>field-common</module>
         <module>table-common</module>
         <module>report-common</module>
+        <module>base-common</module>
     </modules>
 
     <properties>
@@ -28,11 +29,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.mrzhuyk.starter</groupId>
-            <artifactId>sql-father-mybatis-starter</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-    </dependencies>
 </project>

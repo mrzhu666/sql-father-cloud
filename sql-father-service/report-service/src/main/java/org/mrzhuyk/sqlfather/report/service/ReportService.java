@@ -9,5 +9,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2023-08-30 22:25:07
 */
 public interface ReportService extends IService<Report> {
-
+    /**
+     * 校验举报
+     *
+     * @param report
+     * @param add
+     */
+    void validReport(Report report, boolean add);
 }

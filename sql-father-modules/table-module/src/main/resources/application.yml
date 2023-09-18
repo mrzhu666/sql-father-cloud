@@ -1,0 +1,15 @@
+server:
+  port: 8506
+  servlet:
+    context-path: /api
+
+spring:
+  # 支持 swagger3
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+#  devtools:
+#    restart:
+#      additional-paths: src/main/java
+
+

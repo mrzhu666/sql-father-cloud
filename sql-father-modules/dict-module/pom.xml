@@ -29,8 +29,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mrzhuyk.service</groupId>
+            <artifactId>dict-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mrzhuyk.common</groupId>
-            <artifactId>sql-father-core</artifactId>
+            <artifactId>core-common</artifactId>
             <version>1.0.0</version>
         </dependency>
 

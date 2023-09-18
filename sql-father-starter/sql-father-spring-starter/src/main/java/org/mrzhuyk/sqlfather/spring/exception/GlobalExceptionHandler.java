@@ -7,6 +7,7 @@ import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
         log.error("业务异常："+biz); //日志记录，用于复查
         return Result.error(biz);
     }
+    
     
     /**
      * 捕获其它所有异常

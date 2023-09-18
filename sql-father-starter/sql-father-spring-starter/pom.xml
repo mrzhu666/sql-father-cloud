@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>org.mrzhuyk.common</groupId>
-            <artifactId>sql-father-core</artifactId>
+            <artifactId>core-common</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>

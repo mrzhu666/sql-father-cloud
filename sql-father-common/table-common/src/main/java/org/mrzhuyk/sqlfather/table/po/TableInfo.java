@@ -29,6 +29,7 @@ public class TableInfo implements Serializable {
 
     /**
      * 表信息（json）
+     *  TableSchema实体
      */
     @TableField(value = "content")
     private String content;

@@ -17,6 +17,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>dict-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>user-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.mrzhuyk.service</groupId>
             <artifactId>report-service</artifactId>
@@ -25,6 +37,11 @@
         <dependency>
             <groupId>org.mrzhuyk.starter</groupId>
             <artifactId>sql-father-spring-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.starter</groupId>
+            <artifactId>sql-father-nacos-starter</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

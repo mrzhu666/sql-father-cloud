@@ -9,5 +9,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2023-08-30 21:13:22
 */
 public interface FieldInfoService extends IService<FieldInfo> {
-
+    /**
+     * 校验并处理
+     *
+     * @param fieldInfo
+     * @param add 是否为创建校验
+     */
+    void validAndHandleFieldInfo(FieldInfo fieldInfo, boolean add);
 }

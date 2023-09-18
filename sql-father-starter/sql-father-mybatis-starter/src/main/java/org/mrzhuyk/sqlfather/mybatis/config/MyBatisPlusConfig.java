@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-@MapperScan("com.yupi.sqlfather.mapper")
 public class MyBatisPlusConfig {
     
     /**

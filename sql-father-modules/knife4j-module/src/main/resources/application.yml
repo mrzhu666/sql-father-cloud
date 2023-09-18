@@ -11,3 +11,29 @@ knife4j:
         namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
         group-name: DEFAULT_GROUP
         location: /v2/api-docs?group=default
+      - name: SQL服务
+        serviceName: sql-father-sql-server
+        namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group-name: DEFAULT_GROUP
+        location: /v2/api-docs?group=default
+      - name: 字段服务
+        serviceName: sql-father-field-server
+        namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group-name: DEFAULT_GROUP
+        location: /v2/api-docs?group=default
+      - name: 词典服务
+        serviceName: sql-father-dict-server
+        namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group-name: DEFAULT_GROUP
+        location: /v2/api-docs?group=default
+      - name: 举报服务
+        serviceName: sql-father-report-server
+        namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group-name: DEFAULT_GROUP
+        location: /v2/api-docs?group=default
+      - name: 表服务
+        serviceName: sql-father-table-server
+        namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group-name: DEFAULT_GROUP
+        location: /v2/api-docs?group=default
+

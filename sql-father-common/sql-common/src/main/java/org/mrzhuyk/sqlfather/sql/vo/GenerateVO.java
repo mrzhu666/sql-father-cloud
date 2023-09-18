@@ -8,12 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * 所有生成内容
+ */
 @Data
 public class GenerateVO implements Serializable {
     private TableSchema tableSchema;
     
     private String createSql;
     
+    /**
+     * 模拟数据
+     */
     private List<Map<String, Object>> dataList;
     
     private String insertSql;

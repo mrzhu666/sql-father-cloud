@@ -18,8 +18,23 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>org.mrzhuyk.starter</groupId>
+            <artifactId>sql-father-mybatis-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.mrzhuyk.common</groupId>
             <artifactId>field-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.common</groupId>
+            <artifactId>base-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.common</groupId>
+            <artifactId>core-common</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
