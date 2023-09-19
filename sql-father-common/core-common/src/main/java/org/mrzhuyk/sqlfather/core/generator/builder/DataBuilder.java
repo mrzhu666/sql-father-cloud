@@ -38,7 +38,7 @@ public class DataBuilder {
             // 填充结果列表
             if (CollectionUtils.isNotEmpty(dataList)) {
                 for (int i = 0; i < rowNum; i++) {
-                    resultList.get(i).put(fieldName, dataList.get(0));
+                    resultList.get(i).put(fieldName, dataList.get(i));
                 }
             }
         }
