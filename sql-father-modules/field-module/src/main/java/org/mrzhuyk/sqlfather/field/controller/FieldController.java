@@ -41,7 +41,7 @@ import java.util.Objects;
 @Slf4j
 @Api("字段服务")
 @RestController
-@RequestMapping("/field")
+@RequestMapping("/field_info")
 public class FieldController {
     @Resource
     FieldInfoService fieldInfoService;

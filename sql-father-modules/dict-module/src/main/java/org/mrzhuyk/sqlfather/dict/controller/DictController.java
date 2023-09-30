@@ -29,14 +29,17 @@ import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
 import org.mrzhuyk.sqlfather.sql.vo.UserVO;
 import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Api(tags = "词库服务")
@@ -44,6 +47,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/dict")
 public class DictController {
+    
+    private static final String REDIS_PREFIX_KEY = "dict:public:"; // 公开数据缓存
+    
+    private static final SecureRandom random = new SecureRandom();
+    
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     
     
     @Resource
@@ -54,14 +64,12 @@ public class DictController {
     
     /**
      * 添加词库
-     *
      * @param dictAddRequest
-     * @param request
      * @return
      */
     @ApiOperation("添加词库")
     @PostMapping("/add")
-    public Result<Long> addDict(DictAddRequest dictAddRequest, HttpServletRequest request) {
+    public Result<Long> addDict(DictAddRequest dictAddRequest) {
         if (dictAddRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -73,7 +81,6 @@ public class DictController {
     
     /**
      * 根据id获取词库数据
-     *
      * @param id
      * @return
      */
@@ -90,14 +97,12 @@ public class DictController {
     
     /**
      * 删除词库
-     *
      * @param deleteRequest
-     * @param request
      * @return
      */
     @ApiOperation("删除词库")
     @PostMapping("/delete")
-    public Result<Boolean> deleteDict(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public Result<Boolean> deleteDict(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -126,9 +131,9 @@ public class DictController {
      * @param dictUpdateRequest
      * @return
      */
+    @AuthCheck(mustRole = "admin")
     @ApiOperation("更新词库，管理员权限")
     @PostMapping("/update")
-    @AuthCheck(mustRole = "admin")
     public Result<Boolean> updateDict(@RequestBody DictUpdateRequest dictUpdateRequest) {
         if (dictUpdateRequest == null || dictUpdateRequest.getId() <= 0) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
@@ -168,14 +173,22 @@ public class DictController {
      */
     @ApiOperation("获取列表分页")
     @GetMapping("/list/page")
-    public Result<Page<Dict>> listDictPage(DictQueryRequest dictQueryRequest) {
+    public Result<Page<Dict>> listDictPage( DictQueryRequest dictQueryRequest) {
         long current = dictQueryRequest.getCurrent(); // 当前页
         long size = dictQueryRequest.getPageSize(); // 大小
         // 限制爬虫
         if (size>20) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
-        
+        //
+        //String key = REDIS_PREFIX_KEY + StringUtils.joinWith(":","list",current,size);
+        //Page<Dict> dictPage=(Page<Dict>)redisTemplate.opsForValue().get(key);
+        //if (dictPage==null) {
+        //    dictPage = dictService.page(new Page<>(current, size),
+        //        getQueryWrapper(dictQueryRequest));
+        //    redisTemplate.opsForValue().set(key,dictPage,600+ random.nextInt(100), TimeUnit.SECONDS);
+        //}
+        //
         Page<Dict> dictPage = dictService.page(new Page<>(current, size), getQueryWrapper(dictQueryRequest));
         return Result.success(dictPage);
     }
@@ -184,13 +197,11 @@ public class DictController {
      * 获取当前用户可选的列表（只返回 id 和名称）
      *  公开的词库和个人词库
      * @param dictQueryRequest
-     * @param request
      * @return
      */
     @ApiOperation("获取当前用户可选的列表（只返回 id 和名称）")
     @GetMapping("/my/list")
-    public Result<List<Dict>> listMyDict(DictQueryRequest dictQueryRequest,
-                                               HttpServletRequest request) {
+    public Result<List<Dict>> listMyDict(DictQueryRequest dictQueryRequest) {
         if (dictQueryRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -251,13 +262,11 @@ public class DictController {
      * 分页获取当前用户创建的资源列表
      *
      * @param dictQueryRequest
-     * @param request
      * @return
      */
     @ApiOperation("分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
-    public Result<Page<Dict>> listMyAddDictByPage(DictQueryRequest dictQueryRequest,
-                                                        HttpServletRequest request) {
+    public Result<Page<Dict>> listMyAddDictByPage(DictQueryRequest dictQueryRequest) {
         if (dictQueryRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -303,6 +312,7 @@ public class DictController {
         idField.setComment("id");
         idField.setPrimaryKey(true);
         idField.setAutoIncrement(true);
+        idField.setMockType(MockTypeEnum.INCREASE.getValue());
         
         TableSchema.Field dataField = new TableSchema.Field();
         dataField.setFieldName("data");

@@ -124,7 +124,7 @@ public class SQLBuilder {
         if (primaryKey) {
             fieldBuilder.append(" ").append("primary key");
         }
-        return null;
+        return fieldBuilder.toString();
     }
     
     

@@ -1,8 +1,27 @@
-整体功能
+设计技术
+
+- Spring Cloud Alibaba ：Nacos、Gateway
+- Knife4j
+- MyBatis-Plus
+- Redis
 
 
 
+服务汇总
 
+| 服务名   |                | 端口号 | 版本号 | 类别     |
+| -------- | -------------- | ------ | ------ | -------- |
+| 数据库   | mysql          | 3306   | v8     | 环境依赖 |
+| 缓存     | redis          | 6379   | v6     | 环境依赖 |
+| 注册中心 | nacos          | 8848   | v2.2.0 | 环境依赖 |
+| 文档服务 | knife4j-module | 8499   | java8  | 业务服务 |
+| 网关服务 | gateway-module | 8500   | java8  | 业务服务 |
+| 用户服务 | user-module    | 8501   | java8  | 业务服务 |
+| SQL服务  | sql-module     | 8502   | java8  | 业务服务 |
+| 字段服务 | field-module   | 8503   | java8  | 业务服务 |
+| 词典服务 | dict-module    | 8504   | java8  | 业务服务 |
+| 举报服务 | report-module  | 8505   | java8  | 业务服务 |
+| 表格服务 | table-module   | 8506   | java8  | 业务服务 |
 
 文档地址：http://localhost:8500/doc/doc.html
 
@@ -13,76 +32,57 @@
 
 
 
+
+
+
+
+
+
 此项目为sql-father-backend-public的微服务版本
 
 原项目地址：[liyupi/sql-father-backend-public: 新项目：快速生成 SQL 和模拟数据的网站（Java 后端），大幅提高开发测试效率！by 程序员鱼皮 (github.com)](https://github.com/liyupi/sql-father-backend-public)
 
 项目结构参考：[blog-aurora/aurora-blog: 🔥Aurora博客是一个基于Spring Cloud Alibaba的多人微服务博客项目，前台和后台界面非常漂亮，特征：邮箱链接验证、账户锁定等邮件功能。前端技术：TypeScript + Vue3 + Pinia + NaiveUi，后端技术：Spring Cloud Alibaba + RabbitMq + Seata + Oauth2。 (github.com)](https://github.com/blog-aurora/aurora-blog)
 
-
-
-mapper包需要固定位置
-
-
-
-父模块和依赖模块问题
-
-父模块和依赖模块的依赖都会引入
-
-groupID设置的问题
-
-common,starter->service->module->
-
-common->api
-
-
-
 # 项目结构
 
 ```
-auroraBackend
-├── sql-father-common          // 各类服务的实体、常量、注解
-│   ├── admin-common
-│   ├── sql-father-core        // 包含核心生成方法
-│   ├── file-common
-│   └── message-common
-├── aurora-modules            // 
-│   ├── admin-boot
-│   ├── article-boot
-│   ├── auth-server-boot
-│   ├── comment-boot
-│   ├── file-boot
-│   ├── gateway-boot
-│   └── message-boot
-├── aurora-starter                   // 各种组件配置类。其它配置？
-│   ├── aurora-amqp-starter
-│   ├── aurora-datasource-starter
-│   ├── aurora-feign-starter
-│   ├── aurora-mybatis-starter
-│   ├── aurora-nacos-starter
-│   ├── aurora-oauth2-starter
-│   ├── aurora-redis-starter
-│   ├── aurora-seata-starter
-│   ├── aurora-security-starter
-│   ├── aurora-sentinel-starter
-│   ├── aurora-spring-boot-starter
-│   └── aurora-swagger-starter
-├── common-api                       // 微服务间的远程调用接口
-│   ├── admin-api
-│   ├── amqp-api
-│   ├── amqp-mail-api
-│   ├── article-api
-│   ├── comment-api
-│   ├── gateway-api
-│   ├── mail-api
-│   └── oauth-api
-├── service                          // 业务逻辑，数据库交互
-│   ├── admin-service
-│   ├── article-service
-│   ├── auth-server-service
-│   ├── comment-service
-│   ├── file-service
-│   └── message-service
+sql-father-cloud
+├── sql-father-api          // 远程服务的接口
+│   ├── dict-api
+│   ├── field-api
+│   └── user-api
+├── sql-father-common          // 各类服务的实体、常量、注解等
+│   ├── base-common            // 基础功能
+│   ├── core-common            // 核心功能
+│   ├── dict-common
+│   ├── field-common
+│   ├── report-common
+│   ├── sql-common
+│   ├── table-common
+│   └── user-common
+├── sql-father-modules          // 服务主体
+│   ├── dict-module
+│   ├── field-moduel
+│   ├── gateway-module
+│   ├── knife4j-module
+│   ├── report-module
+│   ├── sql-module
+│   ├── table-module
+│   └── user-module
+├── sql-father-service           // 业务逻辑，数据库交互
+│   ├── dict-service
+│   ├── field-service
+│   ├── report-service
+│   ├── sql-service
+│   ├── table-service
+│   └── user-service
+├── sql-father-starter                   // 各种组件配置类
+│   ├── sql-father-knife4j-starter
+│   ├── sql-father-mybatis-starter
+│   ├── sql-father-nacos-starter
+│   ├── sql-father-redis-starter
+│   └── sql-father-spring-starter
 └── support
     └── support-service
 ```
@@ -171,3 +171,21 @@ TableSchemaBuilder 表概要生成器，里面`buildFromAuto`方法需要去查�
 
 
 子模块中的文件读取问题
+
+
+
+
+
+
+
+mapper包需要固定位置
+
+父模块和依赖模块问题
+
+父模块和依赖模块的依赖都会引入
+
+groupID设置的问题
+
+common,starter->service->module->
+
+common->api

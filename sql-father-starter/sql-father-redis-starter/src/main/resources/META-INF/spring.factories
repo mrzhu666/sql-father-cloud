@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.mrzhuyk.sqlfather.redis.config.HttpSessionConfig
+  org.mrzhuyk.sqlfather.redis.config.HttpSessionConfig,\
+  org.mrzhuyk.sqlfather.redis.config.RedisConfig

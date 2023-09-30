@@ -36,7 +36,7 @@ import java.util.List;
 @Slf4j
 @Api("表服务")
 @RestController
-@RequestMapping("/table")
+@RequestMapping("/table_info")
 public class TableController {
     @Resource
     private TableInfoService tableInfoService;

@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
 import org.mrzhuyk.sqlfather.core.entity.Result;
 import org.mrzhuyk.sqlfather.core.enums.MockTypeEnum;
 import org.mrzhuyk.sqlfather.core.exception.BizException;
@@ -18,24 +17,17 @@ import org.mrzhuyk.sqlfather.dict.feign.DictClient;
 import org.mrzhuyk.sqlfather.dict.po.Dict;
 import org.mrzhuyk.sqlfather.field.feign.FieldClient;
 import org.mrzhuyk.sqlfather.field.po.FieldInfo;
-import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
 import org.mrzhuyk.sqlfather.sql.dto.GenerateByAutoRequest;
 import org.mrzhuyk.sqlfather.sql.dto.GenerateBySqlRequest;
-import org.mrzhuyk.sqlfather.sql.po.User;
-import org.mrzhuyk.sqlfather.sql.vo.UserVO;
-import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
+import org.mrzhuyk.sqlfather.sql.vo.UserVO;
+import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +49,6 @@ public class SQLController {
     
     @Resource
     DictClient dictClient;
-    
-    private MultipartFile file;
     
     /**
      * 由表概要生成所有内容
@@ -125,14 +115,13 @@ public class SQLController {
     
     
     /**
-     * 根据excel语句生成表概要
+     * 根据excel生成表概要
      * @param file
      * @return
      */
-    @ApiOperation("根据sql语句生成表概要")
+    @ApiOperation("根据excel生成表概要")
     @PostMapping("/get/schema/excel")
     public Result<TableSchema> getSchemaByExcel(MultipartFile file) {
-        this.file = file;
         return Result.success(TableSchemaBuilder.buildFromExcel(file));
     }
     

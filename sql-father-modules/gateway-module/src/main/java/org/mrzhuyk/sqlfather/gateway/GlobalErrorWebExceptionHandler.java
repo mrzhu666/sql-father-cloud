@@ -12,10 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.Date;
 
 
 /**
@@ -35,6 +38,11 @@ public class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler 
         if (response.isCommitted()) {
             return Mono.error(ex);
         }
+        ServerHttpRequest request = exchange.getRequest();
+        // 请求路径、ip、方法
+        String method = request.getMethodValue();
+        String requestPath = request.getPath().pathWithinApplication().value();
+        log.error("ERROR:{} method:{} path:{}", ex.getMessage(), method, requestPath);
         
         // 设置返回值类型为json
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
