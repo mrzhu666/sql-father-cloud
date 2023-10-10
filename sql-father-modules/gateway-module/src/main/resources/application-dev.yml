@@ -7,7 +7,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: nacos:8848
         namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
         group: DEFAULT_GROUP
         register-enabled: true
@@ -44,7 +44,7 @@ spring:
             - Path=/report/** # 只要是访问的这个路径，一律都被路由到上面指定的服务
 
         - id: knife4j-module
-          uri: http://localhost:8499 # knife4j文档地址
+          uri: http://gateway-module:8499 # knife4j文档地址
           predicates:  # 路由规则，断言什么请求会被路由
             - Path=/doc/**
 #            - Path=/doc.html#/**

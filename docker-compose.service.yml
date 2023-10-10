@@ -1,0 +1,38 @@
+version: '3'
+services:
+  knife4j-module:
+    image: xiaoymin/knife4j
+    volumes:
+      - ./sql-father-modules/knife4j-module/src/main/resources/application-dev.yml:/app/app.yml
+    ports:
+      - "8499:8499"
+#  knife4j-module:
+#    container_name: knife4j-module
+#    build: # 服务的 Docker 构建文件位置
+#      context: ./sql-father-modules/knife4j-module
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8499:8499"
+#    networks:
+#      - mynetwork
+  gateway-module:
+    container_name: gateway-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/gateway-module
+      dockerfile: Dockerfile
+    ports:
+      - "8500:8500"
+    networks:
+      - mynetwork
+  user-module:
+    container_name: user-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/user-module
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

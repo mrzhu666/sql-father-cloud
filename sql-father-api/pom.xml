@@ -14,6 +14,7 @@
     <modules>
         <module>dict-api</module>
         <module>field-api</module>
+        <module>user-api</module>
     </modules>
 
     <properties>

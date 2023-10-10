@@ -6,11 +6,11 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.0.198:8848
+        server-addr: localhost:8848
         namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
         group: DEFAULT_GROUP
       config:
-        server-addr: 192.168.0.198:8848
+        server-addr: localhost:8848
         namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
         group: DEFAULT_GROUP
         file-extension: yml
