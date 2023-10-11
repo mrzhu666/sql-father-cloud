@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient("sql-father-dict-server")
 public interface DictClient {
-    @GetMapping("/api/dict/get")
+    @GetMapping("/dict/get")
     Dict getDictById(Long id);
 }
 

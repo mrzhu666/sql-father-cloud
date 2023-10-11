@@ -90,11 +90,7 @@ public class SQLController {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         // 远程调用获取字段
-        Result<List<FieldInfo>> result = fieldClient.getFieldByAuto(words);
-        if (result.getCode() != 0) {
-            throw new BizException(ErrorEnum.PARAMS_ERROR,"远程调用："+result.getMessage());
-        }
-        List<FieldInfo> fieldByAuto = result.getData();
+        List<FieldInfo> fieldByAuto = fieldClient.getFieldByAuto(words);
         
         return Result.success(TableSchemaBuilder.buildFromAuto(words, fieldByAuto));
     }

@@ -137,6 +137,12 @@ public class AccessLogFilter implements GlobalFilter, Ordered{
      * 打印日志并将日志内容写入mongodb
      */
     private void writeAccessLog(GatewayLog gatewayLog) {
+        String requestPath = gatewayLog.getRequestPath();
+        // 文档请求不打印
+        if (requestPath.contains("doc")) {
+            return;
+        }
+        
         log.info("{} {}, RequestBody:{} , ResponseBody:{}", gatewayLog.getRequestMethod(), gatewayLog.getRequestPath(), gatewayLog.getRequestBody(),gatewayLog.getResponseBody());
         // 写入mongodb
         //accessLogService.saveAccessLog(gatewayLog);

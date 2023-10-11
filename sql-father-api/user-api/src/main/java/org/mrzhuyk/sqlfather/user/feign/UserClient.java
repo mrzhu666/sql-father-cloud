@@ -12,7 +12,7 @@ public interface UserClient {
      * 获取当前登录用户
      * @return
      */
-    @GetMapping("/api/user/get/login")
+    @GetMapping("/user/get/login")
     UserVO getLoginUser();
     
 }

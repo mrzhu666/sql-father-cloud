@@ -4,7 +4,7 @@ knife4j:
   enableAggregation: true
   nacos:
     enable: true
-    serviceUrl: http://nacos:8804/nacos/
+    serviceUrl: http://nacos:8848/nacos/
     routes:
       - name: 用户服务
         serviceName: sql-father-user-server

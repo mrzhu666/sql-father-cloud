@@ -1,0 +1,28 @@
+
+
+spring:
+  application:
+    name: sql-father-sql-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+        namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group: DEFAULT_GROUP
+      config:
+        server-addr: nacos:8848
+        namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+        group: DEFAULT_GROUP
+        file-extension: yml
+        shared-configs:
+          - data-id: share-mybatis-dev.yml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: share-nacos-dev.yml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: share-redis-dev.yml
+            group: DEFAULT_GROUP
+            refresh: true
+
+

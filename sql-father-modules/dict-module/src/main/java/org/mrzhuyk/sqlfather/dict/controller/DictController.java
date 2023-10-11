@@ -24,6 +24,7 @@ import org.mrzhuyk.sqlfather.dict.enums.ReviewStatusEnum;
 import org.mrzhuyk.sqlfather.dict.po.Dict;
 import org.mrzhuyk.sqlfather.dict.service.DictService;
 import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
+import org.mrzhuyk.sqlfather.sql.po.User;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
 import org.mrzhuyk.sqlfather.sql.vo.UserVO;
@@ -69,14 +70,21 @@ public class DictController {
      */
     @ApiOperation("添加词库")
     @PostMapping("/add")
-    public Result<Long> addDict(DictAddRequest dictAddRequest) {
+    public Result<Long> addDict(@RequestBody DictAddRequest dictAddRequest) {
         if (dictAddRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
-        
         Dict dict = new Dict();
         BeanUtils.copyProperties(dictAddRequest, dict);
-        return null;
+        // 校验
+        dictService.validAndHandleDict(dict, true);
+        UserVO loginUser = userClient.getLoginUser();
+        dict.setUserId(loginUser.getId());
+        boolean result = dictService.save(dict);
+        if (!result) {
+            throw new BizException(ErrorEnum.OPERATION_ERROR);
+        }
+        return Result.success(dict.getId());
     }
     
     /**

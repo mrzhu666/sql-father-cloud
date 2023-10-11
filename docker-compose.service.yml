@@ -1,20 +1,21 @@
 version: '3'
 services:
-  knife4j-module:
-    image: xiaoymin/knife4j
-    volumes:
-      - ./sql-father-modules/knife4j-module/src/main/resources/application-dev.yml:/app/app.yml
-    ports:
-      - "8499:8499"
 #  knife4j-module:
-#    container_name: knife4j-module
-#    build: # 服务的 Docker 构建文件位置
-#      context: ./sql-father-modules/knife4j-module
-#      dockerfile: Dockerfile
+#    image: xiaoymin/knife4j
+#    volumes:
+#      - ./sql-father-modules/knife4j-module/src/main/resources/application-dev.yml:/app/app.yml
 #    ports:
 #      - "8499:8499"
-#    networks:
-#      - mynetwork
+#      - "10000:10000"
+  knife4j-module:
+    container_name: knife4j-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/knife4j-module
+      dockerfile: Dockerfile
+    ports:
+      - "8499:8499"
+    networks:
+      - mynetwork
   gateway-module:
     container_name: gateway-module
     build: # 服务的 Docker 构建文件位置
@@ -31,6 +32,51 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8501:8501"
+    networks:
+      - mynetwork
+  sql-module:
+    container_name: sql-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/sql-module
+      dockerfile: Dockerfile
+    ports:
+      - "8502:8502"
+    networks:
+      - mynetwork
+  field-module:
+    container_name: field-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/field-module
+      dockerfile: Dockerfile
+    ports:
+      - "8503:8503"
+    networks:
+      - mynetwork
+  dict-module:
+    container_name: dict-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/dict-module
+      dockerfile: Dockerfile
+    ports:
+      - "8504:8504"
+    networks:
+      - mynetwork
+  report-module:
+    container_name: report-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/report-module
+      dockerfile: Dockerfile
+    ports:
+      - "8505:8505"
+    networks:
+      - mynetwork
+  table-module:
+    container_name: table-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/table-module
+      dockerfile: Dockerfile
+    ports:
+      - "8506:8506"
     networks:
       - mynetwork
 

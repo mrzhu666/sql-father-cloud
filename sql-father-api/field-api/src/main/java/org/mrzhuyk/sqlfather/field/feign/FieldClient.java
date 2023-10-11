@@ -10,6 +10,6 @@ import java.util.List;
 
 @FeignClient("sql-father-field-server")
 public interface FieldClient {
-    @GetMapping("/api/field/get/schema/auto")
-    Result<List<FieldInfo>> getFieldByAuto(@RequestParam String[] words);
+    @GetMapping("/field_info/get/schema/auto")
+    List<FieldInfo> getFieldByAuto(String[] words);
 }
