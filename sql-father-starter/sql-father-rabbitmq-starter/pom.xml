@@ -4,28 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.mrzhuyk</groupId>
-        <artifactId>sql-father-cloud</artifactId>
+        <groupId>org.mrzhuyk.starter</groupId>
+        <artifactId>sql-father-starter</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>org.mrzhuyk.service</groupId>
-    <artifactId>sql-father-service</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>user-service</module>
-        <module>sql-service</module>
-        <module>dict-service</module>
-        <module>field-service</module>
-        <module>table-service</module>
-        <module>report-service</module>
-        <module>rabbitmq-service</module>
-    </modules>
+    <artifactId>sql-father-rabbitmq-starter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

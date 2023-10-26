@@ -1,5 +1,5 @@
 -- 创建库
-create database if not exists sqlfather;
+create database if not exists sqlfather character set utf8 collate utf8_general_ci;
 
 -- 切换库
 use sqlfather;
@@ -19,8 +19,7 @@ create table if not exists user
     isDelete     tinyint      default 0                 not null comment '是否删除',
     constraint uni_userAccount
         unique (userAccount)
-)
-    comment '用户';
+) comment '用户';
 
 -- 词库表
 create table if not exists dict

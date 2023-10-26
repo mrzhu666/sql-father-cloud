@@ -17,6 +17,7 @@
         <module>sql-father-nacos-starter</module>
         <module>sql-father-knife4j-starter</module>
         <module>sql-father-redis-starter</module>
+        <module>sql-father-rabbitmq-starter</module>
     </modules>
 
     <properties>

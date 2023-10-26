@@ -1,11 +1,11 @@
+# 项目简介
+
 涉及技术
 
 - Spring Cloud Alibaba ：Nacos、Gateway
 - Knife4j
 - MyBatis-Plus
 - Redis
-
-
 
 服务汇总
 
@@ -14,6 +14,7 @@
 | 数据库   | mysql          | 3306   | v8     | 环境依赖 |
 | 缓存     | redis          | 6379   | v6     | 环境依赖 |
 | 注册中心 | nacos          | 8848   | v2.2.0 | 环境依赖 |
+| 消息队列 | RabbitMQ       | 5672   |        | 环境依赖 |
 | 文档服务 | knife4j-module | 8499   | java8  | 业务服务 |
 | 网关服务 | gateway-module | 8500   | java8  | 业务服务 |
 | 用户服务 | user-module    | 8501   | java8  | 业务服务 |
@@ -23,19 +24,6 @@
 | 举报服务 | report-module  | 8505   | java8  | 业务服务 |
 | 表格服务 | table-module   | 8506   | java8  | 业务服务 |
 
-文档地址：http://localhost:8500/doc/doc.html
-
-- 启动nacos
-  - 端口设置
-
-- 启动redis
-
-
-
-
-
-
-
 
 
 此项目为sql-father-backend-public的微服务版本
@@ -43,6 +31,43 @@
 原项目地址：[liyupi/sql-father-backend-public: 新项目：快速生成 SQL 和模拟数据的网站（Java 后端），大幅提高开发测试效率！by 程序员鱼皮 (github.com)](https://github.com/liyupi/sql-father-backend-public)
 
 项目结构参考：[blog-aurora/aurora-blog: 🔥Aurora博客是一个基于Spring Cloud Alibaba的多人微服务博客项目，前台和后台界面非常漂亮，特征：邮箱链接验证、账户锁定等邮件功能。前端技术：TypeScript + Vue3 + Pinia + NaiveUi，后端技术：Spring Cloud Alibaba + RabbitMq + Seata + Oauth2。 (github.com)](https://github.com/blog-aurora/aurora-blog)
+
+# 运行
+
+- 安装docker、maven
+- 进入项目文件夹
+
+```sh
+cd sql-father-cloud
+```
+
+- maven打包
+
+```
+mvn clean package
+```
+
+- docker运行环境配置
+
+```sh
+docker-compose -f docker-compose.env.yml build # 构建
+docker-compose -f docker-compose.env.yml up -d # 运行
+```
+
+- docker运行服务
+
+```sh
+docker-compose -f docker-compose.service.yml build # 构建
+docker-compose -f docker-compose.service.yml up -d # 运行
+```
+
+网关地址：http://localhost:8500/
+
+文档地址：http://localhost:8500/doc/doc.html
+
+nacos：http://localhost:8848/
+
+RabbitMQ管理页面：http://localhost:15672/
 
 # 项目结构
 

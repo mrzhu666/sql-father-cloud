@@ -4,23 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.mrzhuyk</groupId>
-        <artifactId>sql-father-cloud</artifactId>
+        <groupId>org.mrzhuyk.service</groupId>
+        <artifactId>sql-father-service</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>org.mrzhuyk.service</groupId>
-    <artifactId>sql-father-service</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>user-service</module>
-        <module>sql-service</module>
-        <module>dict-service</module>
-        <module>field-service</module>
-        <module>table-service</module>
-        <module>report-service</module>
-        <module>rabbitmq-service</module>
-    </modules>
+    <artifactId>rabbitmq-service</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -28,4 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.mrzhuyk.starter</groupId>
+            <artifactId>sql-father-rabbitmq-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+    </dependencies>
 </project>

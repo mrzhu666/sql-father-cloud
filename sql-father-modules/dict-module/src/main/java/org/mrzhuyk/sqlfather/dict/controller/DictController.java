@@ -23,6 +23,8 @@ import org.mrzhuyk.sqlfather.dict.dto.DictUpdateRequest;
 import org.mrzhuyk.sqlfather.dict.enums.ReviewStatusEnum;
 import org.mrzhuyk.sqlfather.dict.po.Dict;
 import org.mrzhuyk.sqlfather.dict.service.DictService;
+import org.mrzhuyk.sqlfather.rabbitmq.RabbitmqService;
+import org.mrzhuyk.sqlfather.rabbitmq.config.RabbitmqConfig;
 import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
 import org.mrzhuyk.sqlfather.sql.po.User;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
@@ -62,6 +64,9 @@ public class DictController {
     
     @Resource
     UserClient userClient;
+    
+    @Resource
+    RabbitmqService rabbitmqService;
     
     /**
      * 添加词库
@@ -157,6 +162,7 @@ public class DictController {
             throw new BizException(ErrorEnum.NOT_FOUND_ERROR);
         }
         boolean res = dictService.updateById(dict);
+        redisClear(); // 清除缓存
         return Result.success(res);
     }
     
@@ -188,18 +194,32 @@ public class DictController {
         if (size>20) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
-        //
-        //String key = REDIS_PREFIX_KEY + StringUtils.joinWith(":","list",current,size);
-        //Page<Dict> dictPage=(Page<Dict>)redisTemplate.opsForValue().get(key);
-        //if (dictPage==null) {
-        //    dictPage = dictService.page(new Page<>(current, size),
-        //        getQueryWrapper(dictQueryRequest));
-        //    redisTemplate.opsForValue().set(key,dictPage,600+ random.nextInt(100), TimeUnit.SECONDS);
-        //}
-        //
-        Page<Dict> dictPage = dictService.page(new Page<>(current, size), getQueryWrapper(dictQueryRequest));
+        
+        // 走缓存
+        String key = REDIS_PREFIX_KEY + StringUtils.joinWith(":","list",current,size);
+        Page<Dict> dictPage=(Page<Dict>)redisTemplate.opsForValue().get(key);
+        if (dictPage==null) {
+            dictPage = dictService.page(new Page<>(current, size),
+                getQueryWrapper(dictQueryRequest));
+            redisTemplate.opsForValue().set(key,dictPage,600+ random.nextInt(100), TimeUnit.SECONDS);
+        }
+        
+
+        //Page<Dict> dictPage = dictService.page(new Page<>(current, size), getQueryWrapper(dictQueryRequest));
         return Result.success(dictPage);
     }
+    
+    @ApiOperation("清除缓存")
+    @GetMapping("/redis/clear")
+    public Result<Boolean> redis() {
+        redisClear();
+        return Result.success(true);
+    }
+    
+    public void redisClear() {
+        rabbitmqService.send(REDIS_PREFIX_KEY, RabbitmqConfig.TOPIC_EXCHANGE_NAME, RabbitmqConfig.ROUTING_KEY);
+    }
+    
     
     /**
      * 获取当前用户可选的列表（只返回 id 和名称）

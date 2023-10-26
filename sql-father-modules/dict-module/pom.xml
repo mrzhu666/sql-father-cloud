@@ -54,6 +54,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mrzhuyk.service</groupId>
+            <artifactId>rabbitmq-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mrzhuyk.starter</groupId>
             <artifactId>sql-father-spring-starter</artifactId>
             <version>1.0.0</version>

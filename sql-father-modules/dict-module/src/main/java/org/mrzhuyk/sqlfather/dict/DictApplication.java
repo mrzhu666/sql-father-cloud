@@ -2,22 +2,24 @@ package org.mrzhuyk.sqlfather.dict;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
 import org.mrzhuyk.sqlfather.core.annotation.EnableCustomConfig;
 import org.mrzhuyk.sqlfather.core.annotation.EnableCustomFeign;
-import org.mrzhuyk.sqlfather.core.generator.config.FreeMarkerConfig;
+import org.mrzhuyk.sqlfather.rabbitmq.RabbitmqService;
+import org.mrzhuyk.sqlfather.rabbitmq.config.RabbitmqConfig;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
-import java.net.URL;
+import javax.annotation.Resource;
 
 @Slf4j
 @SpringBootApplication
 @EnableCustomConfig
 @EnableCustomFeign
 public class DictApplication implements CommandLineRunner {
+    @Resource
+    RabbitmqService rabbitmqService;
+    
     public static void main(String[] args) {
         SpringApplication.run(DictApplication.class, args);
     }
@@ -29,15 +31,7 @@ public class DictApplication implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        //URL templates = DictApplication.class.getResource("/templates");  //一定要加斜杆，不然返回空。本地运行可以，jar包不行文件不存在。
-        URL templates = DictApplication.class.getClassLoader().getResource("templates"); //本地运行可以，jar包不行文件不存在
-        if (templates == null) {
-            log.info("templates is null");
-            return;
-        } else {
-            log.info("templates exists");
-        }
-        File file = new File(templates.getFile());
-        log.info("templates folder exists is "+file.exists());
+        String message="key";
+        rabbitmqService.send(message, RabbitmqConfig.TOPIC_EXCHANGE_NAME,RabbitmqConfig.ROUTING_KEY);
     }
 }

@@ -69,6 +69,7 @@ public class TableSchemaBuilder {
             List<FieldInfo> infoList = Optional.ofNullable(nameFieldInfoMap.get(word)).orElse(fieldNameFieldInfoMap.get(word));
             if (CollectionUtils.isNotEmpty(infoList)) {
                 field = GSON.fromJson(infoList.get(0).getContent(), TableSchema.Field.class);
+                
             } else {
                 field = getDefaultField(word);
             }
