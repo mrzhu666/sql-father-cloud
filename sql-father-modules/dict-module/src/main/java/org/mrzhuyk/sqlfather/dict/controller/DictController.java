@@ -99,7 +99,7 @@ public class DictController {
      */
     @ApiOperation("根据id获取词库")
     @GetMapping("/get")
-    public Result<Dict> getDictById(Long id) {
+    public Result<Dict> getDictById(@RequestBody Long id) {
         if (id == null || id <= 0) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -175,7 +175,7 @@ public class DictController {
     @ApiOperation("获取列表，管理员权限")
     @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
-    public Result<List<Dict>> listDict(@RequestBody DictQueryRequest dictQueryRequest) {
+    public Result<List<Dict>> listDict(DictQueryRequest dictQueryRequest) {
         List<Dict> dictList = dictService.list(getQueryWrapper(dictQueryRequest));
         return Result.success(dictList);
     }

@@ -1,6 +1,6 @@
 # 重构容器并运行。方便调试测试容器
 file=docker-compose.service.yml
-service=dict-module
+service=user-module
 
 # 模块单独重新打包
 mvn clean package -pl :$service -am -amd -Dmaven.test.skip=true

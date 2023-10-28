@@ -4,10 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
+import org.mrzhuyk.sqlfather.core.dto.DeleteRequest;
 import org.mrzhuyk.sqlfather.core.entity.Result;
 import org.mrzhuyk.sqlfather.core.exception.BizException;
 import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
 import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
+import org.mrzhuyk.sqlfather.sql.dto.UserAddRequest;
 import org.mrzhuyk.sqlfather.sql.dto.UserLoginRequest;
 import org.mrzhuyk.sqlfather.sql.dto.UserRegisterRequest;
 import org.mrzhuyk.sqlfather.sql.po.User;
@@ -102,5 +105,4 @@ public class UserController {
     }
     
     
-    // region 增删改查，管理员权限
 }
