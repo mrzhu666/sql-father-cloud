@@ -50,15 +50,15 @@ mvn clean package
 - docker运行环境配置
 
 ```sh
-docker-compose -f docker-compose.env.yml build # 构建
-docker-compose -f docker-compose.env.yml up -d # 运行
+docker compose -f docker-compose.env.yml build # 构建
+docker compose -f docker-compose.env.yml up -d # 运行
 ```
 
 - docker运行服务
 
 ```sh
-docker-compose -f docker-compose.service.yml build # 构建
-docker-compose -f docker-compose.service.yml up -d # 运行
+docker compose -f docker-compose.service.yml build # 构建
+docker compose -f docker-compose.service.yml up -d # 运行
 ```
 
 网关地址：http://localhost:8500/
@@ -68,6 +68,16 @@ docker-compose -f docker-compose.service.yml up -d # 运行
 nacos：http://localhost:8848/
 
 RabbitMQ管理页面：http://localhost:15672/
+
+   
+
+- 运行nginx
+
+```sh
+
+```
+
+
 
 # 项目结构
 
