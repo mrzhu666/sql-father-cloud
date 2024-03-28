@@ -3,9 +3,9 @@ file=docker-compose.env.yml
 service=rabbitmq
 
 # 重构容器
-docker-compose -f $file build $service
+sudo docker compose -f $file build $service
 # 启动容器
-docker-compose -f $file up -d $service
+sudo docker compose -f $file up -d $service
 # 查看日志
-docker-compose -f $file logs $service -f
+sudo docker compose -f $file logs $service -f
 

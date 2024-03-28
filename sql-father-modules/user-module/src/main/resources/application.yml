@@ -12,16 +12,3 @@ spring:
 #  devtools:
 #    restart:
 #      additional-paths: src/main/java
-
-
-  #配置数据源
-  datasource:
-    #配置数据源类型
-    type: com.zaxxer.hikari.HikariDataSource
-    #配置连接数据库的信息
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sqlfather?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=UTC
-    username: root
-    password: 123456
-  session:
-    timeout:

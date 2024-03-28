@@ -54,6 +54,7 @@ docker compose -f docker-compose.env.yml build # 构建
 docker compose -f docker-compose.env.yml up -d # 运行
 ```
 
+- mysql中nacos数据恢复，包括命名空间、各中间件配置
 - docker运行服务
 
 ```sh
@@ -63,19 +64,11 @@ docker compose -f docker-compose.service.yml up -d # 运行
 
 网关地址：http://localhost:8500/
 
-文档地址：http://localhost:8500/doc/doc.html
+文档地址：http://localhost:8500/doc/doc.html，http://localhost:8499/doc.html
 
-nacos：http://localhost:8848/
+nacos：http://localhost:8848/nacos
 
 RabbitMQ管理页面：http://localhost:15672/
-
-   
-
-- 运行nginx
-
-```sh
-
-```
 
 
 
@@ -192,7 +185,9 @@ TableSchemaBuilder 表概要生成器，里面`buildFromAuto`方法需要去查�
 
 
 
+# 数据备份
 
+nacos数据备份，
 
 # 权限系统
 

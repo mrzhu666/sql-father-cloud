@@ -1,6 +1,7 @@
 .mysql-data/*
 .nacos-data/*
 .redis-data/*
+.nacos-standalone-logs/*
 mysql-init/backup/*
 nacos-standalone-logs/*
 docker/nacos/*
