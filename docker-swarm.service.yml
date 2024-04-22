@@ -1,0 +1,111 @@
+version: '3'
+services:
+  knife4j-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-knife4j-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/knife4j-module
+      dockerfile: Dockerfile
+    ports:
+      - "8499:8499"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  gateway-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-gateway-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/gateway-module
+      dockerfile: Dockerfile
+    ports:
+      - "8500:8500"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  user-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-user-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/user-module
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  sql-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-sql-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/sql-module
+      dockerfile: Dockerfile
+    ports:
+      - "8502:8502"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  field-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-field-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/field-module
+      dockerfile: Dockerfile
+    ports:
+      - "8503:8503"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  dict-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-dict-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/dict-module
+      dockerfile: Dockerfile
+    ports:
+      - "8504:8504"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  report-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-report-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/report-module
+      dockerfile: Dockerfile
+    ports:
+      - "8505:8505"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  table-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-table-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/table-module
+      dockerfile: Dockerfile
+    ports:
+      - "8506:8506"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+
+
+networks:
+  mynetwork:
+    external: true
