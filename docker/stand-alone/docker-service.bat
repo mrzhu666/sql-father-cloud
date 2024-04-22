@@ -1,6 +1,6 @@
 ::重构容器并运行。方便调试测试容器
 set file=docker-compose.service.yml
-set service=user-module
+set service=gateway-module
 
 ::模块单独重新打包
 ::使用call原因 https://blog.csdn.net/weixin_40195422/article/details/125621814
