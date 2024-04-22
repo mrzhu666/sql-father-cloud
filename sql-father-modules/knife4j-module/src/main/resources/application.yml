@@ -4,7 +4,7 @@ knife4j:
   enableAggregation: true
   nacos:
     enable: true
-    serviceUrl: http://localhost:8848/nacos/
+    serviceUrl: http://desktop-wsl-tailscale:8848/nacos/
     routes:
       - name: 用户服务
         serviceName: sql-father-user-server
@@ -36,6 +36,14 @@ knife4j:
         namespace-id: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
         group-name: DEFAULT_GROUP
         location: /v2/api-docs?group=default
-
+#    config:
+#      server-addr: wsl.tailscale.com:8848
+#      namespace: fdcaf9ca-2c1a-4657-8eef-c32d7f391d21
+#      group: DEFAULT_GROUP
+#      file-extension: yml
+#      shared-configs:
+#        - data-id: share-nacos.yml
+#          group: DEFAULT_GROUP
+#          refresh: true
 
 
