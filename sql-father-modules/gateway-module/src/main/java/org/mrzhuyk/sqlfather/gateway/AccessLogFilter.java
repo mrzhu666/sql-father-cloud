@@ -53,6 +53,9 @@ public class AccessLogFilter implements GlobalFilter, Ordered{
     
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        // insert a variable in the request body
+        
+        
         GatewayLog gatewayLog = new GatewayLog();
         ServerHttpRequest request = exchange.getRequest();
         // 请求路径、ip、协议、方法
@@ -67,7 +70,7 @@ public class AccessLogFilter implements GlobalFilter, Ordered{
         gatewayLog.setRequestTime(simpleDateFormat.format(new Date().getTime()));
         
         MediaType contentType = request.getHeaders().getContentType();
-        // 判断是否为json类型
+        // 判断是否为json类型或表单
         if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType) || MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
             return writeBodyLog(exchange, chain, gatewayLog);
         } else {

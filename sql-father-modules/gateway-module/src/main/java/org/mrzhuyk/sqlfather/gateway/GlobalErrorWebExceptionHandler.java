@@ -32,9 +32,18 @@ public class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler 
     
     private final ObjectMapper objectMapper;
     
+    /**
+     * Handles global errors in the web exchange.
+     *
+     * @param exchange the server web exchange
+     * @param ex the thrown exception
+     * @return a Mono representing the completion of error handling
+     */
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
+        
+        // Check if the response is already committed
         if (response.isCommitted()) {
             return Mono.error(ex);
         }
@@ -44,7 +53,7 @@ public class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler 
         String requestPath = request.getPath().pathWithinApplication().value();
         log.error("ERROR:{} method:{} path:{}", ex.getMessage(), method, requestPath);
         
-        // 设置返回值类型为json
+        // Set response content type to JSON
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         
         //设置返回编码

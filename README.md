@@ -34,6 +34,28 @@
 
 # 运行
 
+网关地址：http://localhost:8500/
+
+文档地址：http://localhost:8500/doc/doc.html，http://localhost:8499/doc.html
+
+nacos：http://localhost:8848/nacos
+
+RabbitMQ管理页面：http://localhost:15672/
+
+
+
+- 查看日志
+
+```
+docker service logs sql-father-cloud_gateway-module -f
+```
+
+
+
+## Docker单机
+
+docker/stand-alone里保存着docker compose构建文件
+
 - 安装docker、maven
 - 进入项目文件夹
 
@@ -50,25 +72,45 @@ mvn clean package
 - docker运行环境配置
 
 ```sh
-docker compose -f docker-compose.env.yml build # 构建
-docker compose -f docker-compose.env.yml up -d # 运行
+docker compose -f docker-swarm.env.yml build # 构建
+docker compose -f docker-swarm.env.yml up -d # 运行
 ```
 
 - mysql中nacos数据恢复，包括命名空间、各中间件配置
 - docker运行服务
 
 ```sh
-docker compose -f docker-compose.service.yml build # 构建
-docker compose -f docker-compose.service.yml up -d # 运行
+docker compose -f docker-swarm.service.yml build # 构建
+docker compose -f docker-swarm.service.yml up -d # 运行
 ```
 
-网关地址：http://localhost:8500/
 
-文档地址：http://localhost:8500/doc/doc.html，http://localhost:8499/doc.html
 
-nacos：http://localhost:8848/nacos
+## Swarm集群
 
-RabbitMQ管理页面：http://localhost:15672/
+- 创建网络
+
+```bash
+docker network create --driver overlay --subnet=192.168.0.0/24 --gateway=192.168.0.254 mynetwork
+```
+
+- 环境运行
+
+```bash
+docker stack deploy -c docker-swarm.env.yml sql-father-cloud
+```
+
+- 业务镜像构建
+
+```
+docker compose -f docker-swarm.service.yml build
+```
+
+- 业务运行
+
+```
+docker stack deploy -c docker-swarm.service.yml sql-father-cloud
+```
 
 
 
