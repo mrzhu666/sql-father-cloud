@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 根据注解权限校验
+ * 根据注解权限校验，鉴权
  */
 @Aspect
 @Component
@@ -62,6 +62,8 @@ public class AuthInterceptor {
     public User getLoginUser() {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        //String id = request.getSession().getId();
+        //log.info("sessionId:{}", id);
         return (User)request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
     }
 }
