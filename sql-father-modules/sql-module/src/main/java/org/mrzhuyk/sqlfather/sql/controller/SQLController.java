@@ -21,7 +21,6 @@ import org.mrzhuyk.sqlfather.sql.dto.GenerateByAutoRequest;
 import org.mrzhuyk.sqlfather.sql.dto.GenerateBySqlRequest;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
-import org.mrzhuyk.sqlfather.sql.vo.UserVO;
 import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -165,13 +164,5 @@ public class SQLController {
         }
     }
     
-    
-    @ApiOperation("测试用接口")
-    @GetMapping("/test")
-    public Result<UserVO> test() {
-        UserVO user = userClient.getLoginUser();
-        return Result.success(user);
-    }
-
     
 }
