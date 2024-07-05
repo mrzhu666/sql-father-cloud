@@ -17,6 +17,12 @@ public class RabbitmqService {
     @Resource
     RabbitTemplate rabbitTemplate;
     
+    /**
+     * 发送时生成消息ID，防止消费重复消费
+     * @param message 消息
+     * @param exchangeName 交换器名字
+     * @param routingKey 消息的路由键
+     */
     public void send(Object message, String exchangeName,String routingKey) {
         String json=GSON.toJson(message);
         CorrelationData messageID = new CorrelationData(UUID.randomUUID().toString());  // 生成消息id
