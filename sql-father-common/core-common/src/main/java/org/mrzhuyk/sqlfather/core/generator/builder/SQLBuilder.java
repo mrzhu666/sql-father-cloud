@@ -18,8 +18,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * SQL生成器
+ * SQL生成器，生成SQL语句
  * 支持方言，策略模式
+ *
+ * 这里偷懒了，系统没有定义具体使用哪种数据库的属性
  */
 @Slf4j
 public class SQLBuilder {
@@ -35,7 +37,7 @@ public class SQLBuilder {
     }
     
     /**
-     * 创建表的sql
+     * 创建表的sql语句
      * @param tableSchema
      * @return
      */
