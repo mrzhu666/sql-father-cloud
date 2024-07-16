@@ -11,13 +11,14 @@ import java.util.*;
 
 /**
  * 数据生成器
- *  根据字段的模拟类型进行数据生成
+ *      根据字段的模拟类型进行数据生成
+ *      输入到其它语言的方法中进行对应语言的数据代码生成
  */
 public class DataBuilder {
     /**
      * 生成数据
-     * @param tableSchema
-     * @param rowNum
+     * @param tableSchema 表概要
+     * @param rowNum 生成的数据行数
      * @return 数据格式：数量<字段,数据>
      */
     public static List<Map<String, Object>> generateData(TableSchema tableSchema, int rowNum) {

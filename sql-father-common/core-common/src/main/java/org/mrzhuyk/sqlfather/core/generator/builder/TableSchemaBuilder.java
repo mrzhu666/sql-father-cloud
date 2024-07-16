@@ -20,7 +20,6 @@ import org.mrzhuyk.sqlfather.core.generator.dialect.MySQLDialect;
 import org.mrzhuyk.sqlfather.field.po.FieldInfo;
 import org.mrzhuyk.sqlfather.sql.enums.FieldTypeEnum;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 
 /**
  * 表概要生成器
- *      根据一些信息构建填充表
+ *      作用是根据一些信息构建填充表
  */
 @Slf4j
 public class TableSchemaBuilder {
@@ -48,9 +47,8 @@ public class TableSchemaBuilder {
      * 智能构建
      *      根据输入的名称，自动导入可能的字段，即自动填充字段
      *      字段服务传入参数
-     * @param words
+     * @param words 用户输入的可能的单词
      * @param fieldInfoList 字段数据
-     * @return
      */
     public static TableSchema buildFromAuto(String[] words, List<FieldInfo> fieldInfoList) {
         // 名称 => 字段信息
@@ -84,8 +82,7 @@ public class TableSchemaBuilder {
     /**
      * 根据建表sql构建表
      *  druid工具解析sql语句
-     * @param sql
-     * @return
+     * @param sql SQL语句
      */
     public static TableSchema buildFromSql(String sql) {
         if (StringUtils.isBlank(sql)) {
@@ -165,8 +162,7 @@ public class TableSchemaBuilder {
     
     /**
      * 根据excel构建表
-     * @param file
-     * @return
+     * @param file 传入的文件
      */
     public static TableSchema buildFromExcel(MultipartFile file) {
         try {
@@ -205,8 +201,7 @@ public class TableSchemaBuilder {
     /**
      * 通过值获取字段类型
      *
-     * @param value
-     * @return
+     * @param value 传入的值
      */
     public static String getFieldTypeByValue(String value) {
         if (StringUtils.isBlank(value)) {
@@ -237,19 +232,17 @@ public class TableSchemaBuilder {
     
     /**
      * 判断字符串是不是 double 型
-     * @param str
-     * @return
+     * @param str 传入的字符串
      */
     private static boolean isDouble(String str) {
-        Pattern pattern = Pattern.compile("[0-9]+[.]{0,1}[0-9]*[dD]{0,1}");
+        Pattern pattern = Pattern.compile("[0-9]+[.]?[0-9]*[dD]?");
         Matcher isNum = pattern.matcher(str);
         return isNum.matches();
     }
     
     /**
      * 判断是否为日期
-     * @param str
-     * @return
+     * @param str 日期字符串
      */
     private static boolean isDate(String str) {
         if (StringUtils.isBlank(str)) {
@@ -265,8 +258,7 @@ public class TableSchemaBuilder {
     
     /**
      * 获取默认字段
-     * @param word
-     * @return
+     * @param word 传入的字词
      */
     private static TableSchema.Field getDefaultField(String word) {
         final TableSchema.Field field = new TableSchema.Field();
