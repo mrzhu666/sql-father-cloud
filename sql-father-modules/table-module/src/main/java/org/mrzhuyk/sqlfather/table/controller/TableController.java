@@ -255,10 +255,12 @@ public class TableController {
         if (loginUser == null) {
             throw new BizException(ErrorEnum.NOT_LOGIN_ERROR);
         }
-        Long userId = tableInfoQueryRequest.getUserId();
-        if (loginUser.getId().equals(userId)) {
-            throw new BizException(ErrorEnum.NO_AUTH_ERROR);
-        }
+        Long userId = loginUser.getId();
+        
+        //Long userId = tableInfoQueryRequest.getUserId();
+        //if (loginUser.getId().equals(userId)) {
+        //    throw new BizException(ErrorEnum.NO_AUTH_ERROR);
+        //}
         long current = tableInfoQueryRequest.getCurrent();
         long pageSize = tableInfoQueryRequest.getPageSize();
         if (pageSize > 20) {
