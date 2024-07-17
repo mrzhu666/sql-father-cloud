@@ -9,6 +9,8 @@ import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
 import org.mrzhuyk.sqlfather.sql.po.User;
 import org.mrzhuyk.sqlfather.user.service.UserService;
 import org.mrzhuyk.sqlfather.user.mapper.UserMapper;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -16,15 +18,20 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author mrzhu
-* @description 针对表【user(用户)】的数据库操作Service实现
-* @createDate 2023-08-11 20:51:26
-*/
+ * @author mrzhu
+ * @description 针对表【user(用户)】的数据库操作Service实现
+ * @createDate 2023-08-11 20:51:26
+ */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+    implements UserService {
     @Resource
     private UserMapper userMapper;
+    
+    
+    @Resource
+    private RedissonClient redissonClient;
+    
     
     /**
      * 盐值，混淆密码
@@ -34,11 +41,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     /**
      * 用户注册
      *
-     * @param userName 用户名
-     * @param userAccount 用户账户
-     * @param userPassword 用户密码
+     * @param userName      用户名
+     * @param userAccount   用户账户
+     * @param userPassword  用户密码
      * @param checkPassword 校验密码
-     * @param userRole 用户角色
+     * @param userRole      用户角色
      * @return 新用户 id
      */
     @Override
@@ -56,37 +63,92 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
             throw new BizException(ErrorEnum.PARAMS_ERROR, "用户密码过短");
         }
-        synchronized (userAccount.intern()) {
+        // 校验密码
+        if (!userPassword.equals(checkPassword)) {
+            throw new BizException(ErrorEnum.PARAMS_ERROR, "两次密码不一致");
+        }
+        
+        //密码加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        //插入数据
+        User user = new User();
+        user.setUserName(userName);
+        user.setUserAccount(userAccount);
+        user.setUserPassword(encryptPassword);
+        user.setUserRole(userRole);
+        
+        RLock lock = redissonClient.getLock(userAccount);
+        boolean tryLock = lock.tryLock();
+        if (!tryLock) {
+            throw new BizException(ErrorEnum.OPERATION_ERROR, "请求过多，请稍后再试");
+        }
+        
+        try {
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("userAccount", userAccount);
             long count = userMapper.selectCount(queryWrapper);
             if (count > 0) {
-                // 重复账号
-                throw new BizException(ErrorEnum.PARAMS_ERROR, "账号重复");
+                throw new BizException(ErrorEnum.PARAMS_ERROR, "账号已注册");
             }
-            //密码加密
-            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
-            //插入数据
-            User user = new User();
-            user.setUserName(userName);
-            user.setUserAccount(userAccount);
-            user.setUserPassword(encryptPassword);
-            user.setUserRole(userRole);
             boolean saveResult = this.save(user);
             if (!saveResult) {
-                throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR,"注册失败，数据库错误");
+                throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR, "注册失败，数据库错误");
             }
             return user.getId();
+        } catch (BizException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("用户注册失败：", e);
+            throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR, "用户注册失败");
+        } finally {
+            lock.unlock();
         }
+        
+        // 单机采用锁保证原子性
+        //synchronized (userAccount.intern()) {
+        //    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //    queryWrapper.eq("userAccount", userAccount);
+        //    long count = userMapper.selectCount(queryWrapper);
+        //    if (count > 0) {
+        //        // 重复账号
+        //        throw new BizException(ErrorEnum.PARAMS_ERROR, "账号重复");
+        //    }
+        //
+        //    //try {
+        //    //    Thread.sleep(500+random.nextInt(500));
+        //    //} catch (InterruptedException e) {
+        //    //    throw new RuntimeException(e);
+        //    //}
+        //
+        //    //密码加密
+        //    String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        //    //插入数据
+        //    User user = new User();
+        //    user.setUserName(userName);
+        //    user.setUserAccount(userAccount);
+        //    user.setUserPassword(encryptPassword);
+        //    user.setUserRole(userRole);
+        //    boolean saveResult = this.save(user);
+        //    if (!saveResult) {
+        //        throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR,"注册失败，数据库错误");
+        //    }
+        //
+        //    //try {
+        //    //    Thread.sleep(500+random.nextInt(500));
+        //    //} catch (InterruptedException e) {
+        //    //    throw new RuntimeException(e);
+        //    //}
+        //
+        //    return user.getId();
+        //}
     }
     
     
     /**
      * 用户登录
      *
-     * @param userAccount 用户账户
+     * @param userAccount  用户账户
      * @param userPassword 用户密码
-     * @param request
      * @return 脱敏后的用户信息
      */
     @Override
@@ -110,22 +172,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = this.getOne(queryWrapper);
         
         if (user == null || user.getId() == null) {
-            throw new BizException(ErrorEnum.PARAMS_ERROR,"用户不存在或密码错误");
+            throw new BizException(ErrorEnum.PARAMS_ERROR, "用户不存在或密码错误");
         }
         //记录用户登录态
-        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE,user);
+        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
         return user;
     }
     
     /**
      * 获取当前用户
-     * @param request
-     * @return
      */
     @Override
     public User getLoginUser(HttpServletRequest request) {
         //先判断是否已经登录
-        User currentUser = (User)request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        User currentUser = (User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         if (currentUser == null || currentUser.getId() == null) {
             throw new BizException(ErrorEnum.NOT_LOGIN_ERROR);
         }
@@ -145,19 +205,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     
     /**
      * 判断是否为管理员
-     * @param request
-     * @return
      */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
-        return user!=null && UserConstant.ADMIN_ROLE.equals(user.getUserRole());
+        return user != null && UserConstant.ADMIN_ROLE.equals(user.getUserRole());
     }
     
     /**
      * 用户注册
-     * @param request
-     * @return
      */
     @Override
     public boolean userLogout(HttpServletRequest request) {
