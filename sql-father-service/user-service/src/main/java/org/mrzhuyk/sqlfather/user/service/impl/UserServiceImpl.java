@@ -77,7 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserPassword(encryptPassword);
         user.setUserRole(userRole);
         
-        RLock lock = redissonClient.getLock(userAccount);
+        RLock lock = redissonClient.getLock("userRegister:"+userAccount);
         boolean tryLock = lock.tryLock();
         if (!tryLock) {
             throw new BizException(ErrorEnum.OPERATION_ERROR, "请求过多，请稍后再试");
