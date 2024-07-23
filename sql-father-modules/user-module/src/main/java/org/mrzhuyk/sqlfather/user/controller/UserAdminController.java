@@ -40,9 +40,6 @@ public class UserAdminController {
     
     /**
      * 创建用户
-     * @param userAddRequest
-     * @param request
-     * @return
      */
     @ApiOperation("创建用户（管理员）")
     @PostMapping("/add")
@@ -62,8 +59,6 @@ public class UserAdminController {
     
     /**
      * 删除用户
-     * @param deleteRequest
-     * @return
      */
     @ApiOperation("删除用户（管理员）")
     @PostMapping("/delete")
@@ -82,9 +77,6 @@ public class UserAdminController {
     
     /**
      * 更新用户
-     *
-     * @param userUpdateRequest
-     * @return
      */
     @ApiOperation("更新用户（管理员）")
     @PostMapping("/update")
@@ -104,8 +96,6 @@ public class UserAdminController {
     
     /**
      * 根据 id 获取用户
-     * @param id
-     * @return
      */
     @ApiOperation("根据id获取用户（管理员）")
     @GetMapping("/get")
@@ -122,9 +112,6 @@ public class UserAdminController {
     
     /**
      * 获取用户列表
-     *
-     * @param userQueryRequest
-     * @return
      */
     @ApiOperation("获取用户列表（管理员）")
     @GetMapping("/list")
