@@ -1,13 +1,11 @@
 package org.mrzhuyk.sqlfather.user.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
 import org.mrzhuyk.sqlfather.core.dto.DeleteRequest;
@@ -22,11 +20,9 @@ import org.mrzhuyk.sqlfather.sql.po.User;
 import org.mrzhuyk.sqlfather.sql.vo.UserVO;
 import org.mrzhuyk.sqlfather.user.service.UserService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +40,7 @@ public class UserAdminController {
     @ApiOperation("创建用户（管理员）")
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
+    public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
         if (userAddRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -137,8 +133,6 @@ public class UserAdminController {
     
     /**
      * 分页获取用户列表
-     * @param userQueryRequest
-     * @return
      */
     @ApiOperation("分页获取用户列表（管理员）")
     @GetMapping("/list/page")
