@@ -21,8 +21,9 @@ import org.mrzhuyk.sqlfather.sql.dto.GenerateByAutoRequest;
 import org.mrzhuyk.sqlfather.sql.dto.GenerateBySqlRequest;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
-import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Api(tags = "sql生成服务")
@@ -40,8 +42,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/sql")
 public class SQLController {
     
-    @Resource
-    UserClient userClient;
     
     @Resource
     FieldClient fieldClient;
@@ -49,33 +49,46 @@ public class SQLController {
     @Resource
     DictClient dictClient;
     
+    // 线程池
+    private final static ExecutorService executorService = new ThreadPoolExecutor(10,
+        10,
+        60L,
+        TimeUnit.SECONDS,
+        new LinkedBlockingQueue<>());
+    
     /**
      * 由表概要生成所有内容
-     *
-     * @param tableSchema
-     * @return
      */
     @ApiOperation("表所有内容生成")
     @PostMapping("/generate/schema")
     public Result<GenerateVO> generateBySchema(@RequestBody TableSchema tableSchema) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        // 用于复制请求上下文到其它线程
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         // 将字段模拟类型为词典的，预处理mockParams为词典内容
         for (TableSchema.Field field : tableSchema.getFieldList()) {
             String mockType = field.getMockType();
             if (MockTypeEnum.DICT.getValue().equals(mockType)) {
                 String mockParams = field.getMockParams();
-                Dict dictById = dictClient.getDictById(Long.parseLong(mockParams));
-                field.setMockParams(dictById.getContent());
+                // 异步批量远程调用
+                futures.add(CompletableFuture.runAsync(() -> {
+                    log.info("generateBySchema - ThreadPool id:{} ",Thread.currentThread().getId());
+                    RequestContextHolder.setRequestAttributes(attributes);
+                    Dict dictById = dictClient.getDictById(Long.parseLong(mockParams));
+                    field.setMockParams(dictById.getContent());
+                }, executorService));
             }
         }
+        
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        
         return Result.success(GeneratorFacade.generateAll(tableSchema));
     }
     
     /**
      * 智能填充
-     *  根据输入的名称，自动导入可能的字段，即自动填充字段
-     *  字段服务传入参数
-     * @param autoRequest
-     * @return
+     * 根据输入的名称，自动导入可能的字段，即自动填充字段
+     * 字段服务传入参数
      */
     @ApiOperation("智能填充")
     @PostMapping("/get/schema/auto")
@@ -96,8 +109,6 @@ public class SQLController {
     
     /**
      * 根据sql语句生成表概要
-     * @param sqlRequest
-     * @return
      */
     @ApiOperation("根据sql语句生成表概要")
     @PostMapping("/get/schema/sql")
@@ -111,8 +122,6 @@ public class SQLController {
     
     /**
      * 根据excel生成表概要
-     * @param file
-     * @return
      */
     @ApiOperation("根据excel生成表概要")
     @PostMapping("/get/schema/excel")
@@ -123,8 +132,6 @@ public class SQLController {
     
     /**
      * 下载模拟数据excel
-     * @param generateVO
-     * @param response
      */
     @ApiOperation("下载模拟数据excel")
     @PostMapping("download/data/excel")
