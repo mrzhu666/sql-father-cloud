@@ -99,7 +99,7 @@ public class DictController {
      */
     @ApiOperation("根据id获取词库")
     @GetMapping("/get")
-    public Result<Dict> getDictById(@RequestBody Long id) {
+    public Result<Dict> getDictById(@RequestParam("id") Long id) {
         if (id == null || id <= 0) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }

@@ -346,7 +346,7 @@ public class FieldController {
      */
     @ApiOperation("模糊查询字段信息")
     @GetMapping("/get/schema/auto")
-    public Result<List<FieldInfo>> getFieldByAuto(@RequestParam String[] words) {
+    public Result<List<FieldInfo>> getFieldByAuto(@RequestParam("words") String[] words) {
         // 根据单词去词库里匹配列信息，未匹配到的使用默认值
         QueryWrapper<FieldInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("name", Arrays.asList(words)).or().in("fieldName", Arrays.asList(words));

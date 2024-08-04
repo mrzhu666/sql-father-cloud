@@ -11,5 +11,5 @@ import java.util.List;
 @FeignClient("sql-father-field-server")
 public interface FieldClient {
     @GetMapping("/field_info/get/schema/auto")
-    List<FieldInfo> getFieldByAuto(String[] words);
+    List<FieldInfo> getFieldByAuto(@RequestParam("words") String[] words);
 }
