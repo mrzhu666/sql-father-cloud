@@ -27,7 +27,11 @@ public class RedisConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
-            .setAddress("redis://" + host + ":" + port);
+            .setAddress("redis://" + host + ":" + port)
+            .setConnectionMinimumIdleSize(2) // 核心线程数
+            .setConnectionPoolSize(2); // 最大线程数
+        config.setThreads(3)
+            .setNettyThreads(4);
             //.setPassword("123456");
         return Redisson.create(config);
     }
