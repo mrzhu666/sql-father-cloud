@@ -11,4 +11,13 @@ ADD target/report-module-1.0.0.jar .
 EXPOSE 8505
 
 # 启动命令
-ENTRYPOINT ["java","-jar","/app/report-module-1.0.0.jar","--spring.profiles.active=dev"]
+ENTRYPOINT ["java", \
+            "-Xmx256M", \
+            "-Xms64M", \
+            "-Xss256k", \
+            "-Dnacos.common.processors=2", \
+            "-Dnacos.remote.client.grpc.pool.core.size=3", \
+            "-Dnacos.remote.client.grpc.pool.max.size=3", \
+            "-jar","/app/report-module-1.0.0.jar", \
+            "--spring.profiles.active=dev", \
+            "--server.tomcat.threads.max=4"]

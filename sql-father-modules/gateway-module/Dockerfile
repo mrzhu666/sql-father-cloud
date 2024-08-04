@@ -11,4 +11,6 @@ ADD target/gateway-module-1.0.0.jar .
 EXPOSE 8500
 
 # 启动命令
-ENTRYPOINT ["java","-jar","/app/gateway-module-1.0.0.jar","--spring.profiles.active=dev"]
+ENTRYPOINT ["java", \
+            "-jar","/app/gateway-module-1.0.0.jar", \
+            "--spring.profiles.active=dev"]

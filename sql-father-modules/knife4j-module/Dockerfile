@@ -11,4 +11,10 @@ ADD target/knife4j-module-1.0.0.jar .
 EXPOSE 8499
 
 # 启动命令
-ENTRYPOINT ["java","-jar","/app/knife4j-module-1.0.0.jar","--spring.profiles.active=dev"]
+ENTRYPOINT ["java", \
+            "-Xmx256M", \
+            "-Xms64M", \
+            "-Xss256k", \
+            "-jar","/app/knife4j-module-1.0.0.jar", \
+            "--spring.profiles.active=dev", \
+            "--server.tomcat.threads.max=4"]
