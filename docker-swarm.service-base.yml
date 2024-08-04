@@ -1,0 +1,32 @@
+# 必须的组件服务分离，方便调试
+version: '3'
+services:
+  knife4j-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-knife4j-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/knife4j-module
+      dockerfile: Dockerfile
+    ports:
+      - "8499:8499"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+  gateway-module:
+    image: notebook-wsl-tailscale:5000/sql-father-cloud-gateway-module
+    build: # 服务的 Docker 构建文件位置
+      context: ./sql-father-modules/gateway-module
+      dockerfile: Dockerfile
+    ports:
+      - "8500:8500"
+    networks:
+      - mynetwork
+    deploy:
+      placement:
+        constraints: [ node.labels.role==notebook_wsl ]
+
+networks:
+  mynetwork:
+    external: true
