@@ -79,7 +79,7 @@ public class AccessLogFilter implements GlobalFilter, Ordered{
     }
     
     /**
-     * 其它类型记录
+     * 其它请求类型记录
      */
     private Mono<Void> writeBasicLog(ServerWebExchange exchange, GatewayFilterChain chain, GatewayLog gatewayLog) {
         //StringBuilder builder = new StringBuilder();
