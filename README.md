@@ -3,9 +3,10 @@
 涉及技术
 
 - Spring Cloud Alibaba ：Nacos、Gateway
+- Redis
+- RabbitMQ
 - Knife4j
 - MyBatis-Plus
-- Redis
 
 服务汇总
 
