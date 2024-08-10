@@ -1,3 +1,5 @@
+-- 业务数据表创建
+
 -- 创建库
 create database if not exists sqlfather character set utf8 collate utf8_general_ci;
 

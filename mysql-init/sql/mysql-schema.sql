@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+-- 创建nacos数据存储表
+
 -- 创建库
 create database if not exists nacos_devtest;
 
