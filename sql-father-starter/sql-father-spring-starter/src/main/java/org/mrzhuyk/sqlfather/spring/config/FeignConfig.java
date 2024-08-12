@@ -3,6 +3,7 @@ package org.mrzhuyk.sqlfather.spring.config;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import feign.codec.Decoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,6 +18,7 @@ import java.util.Objects;
 /**
  * 远程调用时复制请求头
  */
+@Slf4j
 @Configuration
 public class FeignConfig implements RequestInterceptor {
     @Bean
@@ -32,9 +34,12 @@ public class FeignConfig implements RequestInterceptor {
     public void apply(RequestTemplate requestTemplate) {
         //获取请求头
         Map<String,String> headers = getHeaders(Objects.requireNonNull(getHttpServletRequest()));
-        for(String headerName : headers.keySet()){
-            requestTemplate.header(headerName, getHeaders(getHttpServletRequest()).get(headerName));
-        }
+        //for (Map.Entry<String, String> stringStringEntry : headers.entrySet()) {
+        //    String key = stringStringEntry.getKey();
+        //    String value = stringStringEntry.getValue();
+        //    requestTemplate.header(key, value);
+        //}
+        requestTemplate.header("cookie", headers.get("cookie"));
     }
     //获取请求对象
     private HttpServletRequest getHttpServletRequest() {
