@@ -48,7 +48,8 @@ public class BizException extends RuntimeException {
     
     @Override
     public Throwable fillInStackTrace() {
-        return this;
+        //return this; 直接返回this，会导致堆栈信息丢失
+        return super.fillInStackTrace();
     }
     
     @Override
