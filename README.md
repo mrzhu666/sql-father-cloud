@@ -2,7 +2,11 @@
 
 涉及技术
 
-- Spring Cloud Alibaba ：Nacos、Gateway
+- Spring Cloud Alibaba
+  - Nacos
+  - Gateway
+
+- Seata
 - Redis
 - RabbitMQ
 - Knife4j
@@ -10,20 +14,21 @@
 
 服务汇总
 
-| 服务名   |                | 端口号 | 版本号 | 类别     |
-| -------- | -------------- | ------ | ------ | -------- |
-| 数据库   | mysql          | 3306   | v8     | 环境依赖 |
-| 缓存     | redis          | 6379   | v6     | 环境依赖 |
-| 注册中心 | nacos          | 8848   | v2.2.0 | 环境依赖 |
-| 消息队列 | RabbitMQ       | 5672   |        | 环境依赖 |
-| 文档服务 | knife4j-module | 8499   | java8  | 业务服务 |
-| 网关服务 | gateway-module | 8500   | java8  | 业务服务 |
-| 用户服务 | user-module    | 8501   | java8  | 业务服务 |
-| SQL服务  | sql-module     | 8502   | java8  | 业务服务 |
-| 字段服务 | field-module   | 8503   | java8  | 业务服务 |
-| 词典服务 | dict-module    | 8504   | java8  | 业务服务 |
-| 举报服务 | report-module  | 8505   | java8  | 业务服务 |
-| 表格服务 | table-module   | 8506   | java8  | 业务服务 |
+| 服务名     |                | 端口号     | 版本号 | 类别     |
+| ---------- | -------------- | ---------- | ------ | -------- |
+| 数据库     | MySQL          | 3306       | v8     | 环境依赖 |
+| 缓存       | Redis          | 6379       | v6     | 环境依赖 |
+| 注册中心   | Nacos          | 8848       | v2.2.0 | 环境依赖 |
+| 消息队列   | RabbitMQ       | 5672       |        | 环境依赖 |
+| 分布式事务 | Seata          | 8091、7091 | v2.0   | 环境依赖 |
+| 文档服务   | knife4j-module | 8499       | java8  | 业务服务 |
+| 网关服务   | gateway-module | 8500       | java8  | 业务服务 |
+| 用户服务   | user-module    | 8501       | java8  | 业务服务 |
+| SQL服务    | sql-module     | 8502       | java8  | 业务服务 |
+| 字段服务   | field-module   | 8503       | java8  | 业务服务 |
+| 词典服务   | dict-module    | 8504       | java8  | 业务服务 |
+| 举报服务   | report-module  | 8505       | java8  | 业务服务 |
+| 表格服务   | table-module   | 8506       | java8  | 业务服务 |
 
 
 
@@ -43,7 +48,7 @@ nacos：http://localhost:8848/nacos
 
 RabbitMQ管理页面：http://localhost:15672/
 
-
+Seata控制台：http://localhost:7091/
 
 - 查看日志
 
@@ -119,20 +124,22 @@ docker stack deploy -c docker-swarm.service.yml sql-father-cloud
 
 ```
 sql-father-cloud
-├── sql-father-api          // 远程服务的接口
+├── mysql-init                   // mysql数据库初始化
+├── seata-config                 // seata服务启动配置
+├── sql-father-api               // 远程服务的接口
 │   ├── dict-api
 │   ├── field-api
 │   └── user-api
-├── sql-father-common          // 各类服务的实体、常量、注解等
-│   ├── base-common            // 基础功能
-│   ├── core-common            // 核心功能
+├── sql-father-common            // 各类服务的实体、常量、注解等
+│   ├── base-common              // 基础功能
+│   ├── core-common              // 核心功能
 │   ├── dict-common
 │   ├── field-common
 │   ├── report-common
 │   ├── sql-common
 │   ├── table-common
 │   └── user-common
-├── sql-father-modules          // 服务主体
+├── sql-father-modules           // 服务主体
 │   ├── dict-module
 │   ├── field-moduel
 │   ├── gateway-module
