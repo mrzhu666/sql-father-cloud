@@ -2,6 +2,9 @@ package org.mrzhuyk.sqlfather.field.service;
 
 import org.mrzhuyk.sqlfather.field.po.FieldInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
+
+import java.util.List;
 
 /**
 * @author mrzhu
@@ -16,4 +19,6 @@ public interface FieldInfoService extends IService<FieldInfo> {
      * @param add 是否为创建校验
      */
     void validAndHandleFieldInfo(FieldInfo fieldInfo, boolean add);
+    
+    Boolean batchAddFieldInfo(List<TableSchema.Field> fieldList);
 }

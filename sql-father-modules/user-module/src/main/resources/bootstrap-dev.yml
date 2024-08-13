@@ -24,5 +24,6 @@ spring:
           - data-id: share-redis-dev.yml
             group: DEFAULT_GROUP
             refresh: true
-
-
+          - data-id: share-seata-dev.yml
+            group: DEFAULT_GROUP
+            refresh: true

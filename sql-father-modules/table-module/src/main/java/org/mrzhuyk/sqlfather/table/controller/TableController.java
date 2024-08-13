@@ -30,7 +30,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -50,8 +49,6 @@ public class TableController {
     
     /**
      * 创建表
-     * @param tableInfoAddRequest
-     * @return
      */
     @ApiOperation("创建表请求")
     @PostMapping("/add")
@@ -64,9 +61,8 @@ public class TableController {
         BeanUtils.copyProperties(tableInfoAddRequest, tableInfo);
         UserVO loginUser = userClient.getLoginUser();
         tableInfo.setUserId(loginUser.getId());
-        tableInfoService.validAndHandleTableInfo(tableInfo, true);  //校验
         
-        boolean save = tableInfoService.save(tableInfo);
+        boolean save = tableInfoService.addTableAndField(tableInfo);
         if (!save) {
             throw new BizException(ErrorEnum.OPERATION_ERROR);
         }
@@ -75,8 +71,6 @@ public class TableController {
     /**
      * 删除
      *  仅限本人或管理员
-     * @param deleteRequest
-     * @return
      */
     @ApiOperation("删除表，仅限本人或管理员")
     @PostMapping("/delete")
@@ -99,8 +93,6 @@ public class TableController {
     /**
      * 更新（仅管理员）
      *  用于更新审核状态
-     * @param tableInfoUpdateRequest
-     * @return
      */
     @ApiOperation("更新（仅管理员）")
     @PostMapping("/update")
@@ -124,9 +116,6 @@ public class TableController {
     
     /**
      * 根据 id 获取
-     *
-     * @param id
-     * @return
      */
     @ApiOperation("根据id获取")
     @GetMapping("/get")
@@ -143,9 +132,6 @@ public class TableController {
     
     /**
      * 获取列表（仅管理员可使用）
-     *
-     * @param tableInfoQueryRequest
-     * @return
      */
     @ApiOperation("获取列表（仅管理员可使用）")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -157,9 +143,6 @@ public class TableController {
     
     /**
      * 分页获取列表
-     *
-     * @param tableInfoQueryRequest
-     * @return
      */
     @ApiOperation("分页获取列表")
     @GetMapping("/list/page")
@@ -180,9 +163,6 @@ public class TableController {
     
     /**
      * 获取当前用户可选的全部资源列表（只返回 id 和名称）
-     *
-     * @param tableInfoQueryRequest
-     * @return
      */
     @ApiOperation("获取当前用户可选的全部资源列表（只返回 id 和名称）")
     @GetMapping("/my/list")
@@ -211,9 +191,6 @@ public class TableController {
     
     /**
      * 分页获取当前用户可选的资源列表
-     *
-     * @param tableInfoQueryRequest
-     * @return
      */
     @ApiOperation("分页获取当前用户可选的资源列表")
     @GetMapping("/my/list/page")
@@ -241,9 +218,6 @@ public class TableController {
     
     /**
      * 分页获取当前用户创建的资源列表
-     *
-     * @param tableInfoQueryRequest
-     * @return
      */
     @ApiOperation("分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
@@ -276,9 +250,6 @@ public class TableController {
     
     /**
      * 生成创建表的 SQL
-     *
-     * @param id
-     * @return
      */
     @ApiOperation("生成创建表的 SQL")
     @PostMapping("/generate/sql")
@@ -298,8 +269,6 @@ public class TableController {
     /**
      * 获取查询包装类
      *  name、content模糊搜索，字段排序
-     * @param tableInfoQueryRequest
-     * @return
      */
     private LambdaQueryWrapper<TableInfo> getQueryWrapper(TableInfoQueryRequest tableInfoQueryRequest) {
         if (tableInfoQueryRequest == null) {

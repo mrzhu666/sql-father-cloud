@@ -1,7 +1,6 @@
 package org.mrzhuyk.sqlfather.field.controller;
 
 
-import cn.hutool.db.sql.SqlBuilder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -31,11 +30,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 
 @Slf4j
@@ -55,8 +51,6 @@ public class FieldController {
     
     /**
      * 添加字段
-     * @param fieldInfoAddRequest
-     * @return
      */
     @ApiOperation("添加字段")
     @PostMapping("/add")
@@ -65,7 +59,7 @@ public class FieldController {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         FieldInfo fieldInfo = new FieldInfo();
-        BeanUtils.copyProperties(fieldInfoAddRequest,fieldInfo);
+        BeanUtils.copyProperties(fieldInfoAddRequest, fieldInfo);
         // 校验
         fieldInfoService.validAndHandleFieldInfo(fieldInfo, true);
         UserVO loginUser = userClient.getLoginUser();
@@ -77,11 +71,23 @@ public class FieldController {
         return Result.success(fieldInfo.getId());
     }
     
+    @ApiOperation("批量添加")
+    @PostMapping("/batch_add")
+    public Result<Boolean> batchAddFieldInfo(@RequestBody List<TableSchema.Field> fieldList) {
+        if (fieldList == null || fieldList.isEmpty()) {
+            throw new BizException(ErrorEnum.PARAMS_ERROR);
+        }
+        
+        boolean save = fieldInfoService.batchAddFieldInfo(fieldList);
+        if (!save) {
+            throw new BizException(ErrorEnum.OPERATION_ERROR);
+        }
+        
+        return Result.success(true);
+    }
+    
     /**
      * 删除
-     *
-     * @param deleteRequest
-     * @return
      */
     @ApiOperation("管理员删除")
     @PostMapping("/delete")
@@ -106,15 +112,12 @@ public class FieldController {
     
     /**
      * 更新（仅管理员）
-     *
-     * @param fieldInfoUpdateRequest
-     * @return
      */
     @ApiOperation("更新字段，仅管理员")
     @PostMapping("/update")
     @AuthCheck(mustRole = "admin")
     public Result<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
-        if (fieldInfoUpdateRequest == null || fieldInfoUpdateRequest.getId()<=0) {
+        if (fieldInfoUpdateRequest == null || fieldInfoUpdateRequest.getId() <= 0) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         FieldInfo fieldInfo = new FieldInfo();
@@ -133,9 +136,6 @@ public class FieldController {
     
     /**
      * 根据 id 获取
-     *
-     * @param id
-     * @return
      */
     @ApiOperation("获取字段")
     @GetMapping("/get")
@@ -149,9 +149,6 @@ public class FieldController {
     
     /**
      * 获取列表（仅管理员可使用）
-     *
-     * @param fieldInfoQueryRequest
-     * @return
      */
     @ApiOperation("获取列表（仅管理员可使用）")
     @AuthCheck(mustRole = "admin")
@@ -163,9 +160,6 @@ public class FieldController {
     
     /**
      * 分页获取列表
-     *
-     * @param fieldInfoQueryRequest
-     * @return
      */
     @ApiOperation("分页获取列表")
     @GetMapping("/list/page")
@@ -187,20 +181,15 @@ public class FieldController {
     
     /**
      * 获取当前用户可选的全部资源列表（只返回 id 和名称）
-     *
-     * @param fieldInfoQueryRequest
-     * @param request
-     * @return
      */
     @ApiOperation("获取当前用户可选的全部资源列表（只返回 id 和名称）")
     @GetMapping("/my/list")
-    public Result<List<FieldInfo>> listMyFieldInfo(FieldInfoQueryRequest fieldInfoQueryRequest,
-                                                         HttpServletRequest request) {
+    public Result<List<FieldInfo>> listMyFieldInfo(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         UserVO loginUser = userClient.getLoginUser();
-        if (loginUser == null || loginUser.getId()<=0) {
+        if (loginUser == null || loginUser.getId() <= 0) {
             throw new BizException(ErrorEnum.NOT_LOGIN_ERROR);
         }
         // 查询审核通过或个人的
@@ -209,22 +198,17 @@ public class FieldController {
             .eq(FieldInfo::getUserId, loginUser.getId())  // 个人
             .or()
             .eq(FieldInfo::getReviewStatus, ReviewStatusEnum.PASS.getValue()); // 审核通过
-        fieldInfoLambdaQueryWrapper.select(FieldInfo::getId,FieldInfo::getName);  // 选择列
+        fieldInfoLambdaQueryWrapper.select(FieldInfo::getId, FieldInfo::getName);  // 选择列
         List<FieldInfo> list = fieldInfoService.list(fieldInfoLambdaQueryWrapper);
         return Result.success(list);
     }
     
     /**
      * 分页获取当前用户可选的资源列表
-     *
-     * @param fieldInfoQueryRequest
-     * @param request
-     * @return
      */
     @ApiOperation("分页获取当前用户可选的资源列表")
     @GetMapping("/my/list/page")
-    public Result<Page<FieldInfo>> listMyFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest,
-                                                               HttpServletRequest request) {
+    public Result<Page<FieldInfo>> listMyFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -250,15 +234,10 @@ public class FieldController {
     
     /**
      * 分页获取当前用户创建的资源列表
-     *
-     * @param fieldInfoQueryRequest
-     * @param request
-     * @return
      */
     @ApiOperation("分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
-    public Result<Page<FieldInfo>> listMyAddFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest,
-                                                                  HttpServletRequest request) {
+    public Result<Page<FieldInfo>> listMyAddFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
@@ -277,11 +256,9 @@ public class FieldController {
     
     
     // endregion
+    
     /**
      * 生成创建字段的 SQL
-     *
-     * @param id
-     * @return
      */
     @ApiOperation("生成创建字段的 SQL")
     @PostMapping("/generate/sql")
@@ -301,9 +278,7 @@ public class FieldController {
     
     /**
      * 获取查询包装类
-     *  名称、字段名称、内容模糊搜索。字段排序
-     * @param fieldInfoQueryRequest
-     * @return
+     * 名称、字段名称、内容模糊搜索。字段排序
      */
     private QueryWrapper<FieldInfo> getQueryWrapper(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
@@ -341,8 +316,6 @@ public class FieldController {
     
     /**
      * 根据提供的词语模糊查询字段信息
-     * @param words
-     * @return
      */
     @ApiOperation("模糊查询字段信息")
     @GetMapping("/get/schema/auto")

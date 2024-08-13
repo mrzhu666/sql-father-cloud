@@ -22,5 +22,22 @@
             <artifactId>table-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>field-api</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.starter</groupId>
+            <artifactId>sql-father-spring-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>user-api</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -51,6 +51,13 @@
             <artifactId>sql-father-nacos-starter</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.mrzhuyk.api</groupId>
+            <artifactId>field-api</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
