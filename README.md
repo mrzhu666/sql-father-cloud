@@ -1,5 +1,14 @@
 # 项目简介
 
+
+
+架构图：
+
+<p align="center">
+  <img src="sql-father架构图.svg">
+  <br/>
+</p>
+
 涉及技术
 
 - Spring Cloud Alibaba
