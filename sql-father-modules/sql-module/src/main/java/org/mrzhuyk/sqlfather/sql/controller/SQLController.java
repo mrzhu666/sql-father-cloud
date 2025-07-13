@@ -63,7 +63,7 @@ public class SQLController {
     @PostMapping("/generate/schema")
     public Result<GenerateVO> generateBySchema(@RequestBody TableSchema tableSchema) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        // 用于复制请求上下文到其它线程
+        // 用于复制请求上下文到其它线程，因为远程调用需要判断当前用户
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         // 将字段模拟类型为词典的，预处理mockParams为词典内容
         for (TableSchema.Field field : tableSchema.getFieldList()) {
