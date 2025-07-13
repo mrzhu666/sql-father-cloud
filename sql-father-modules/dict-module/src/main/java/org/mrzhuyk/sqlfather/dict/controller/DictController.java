@@ -1,16 +1,12 @@
 package org.mrzhuyk.sqlfather.dict.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import net.datafaker.Bool;
 import org.apache.commons.lang3.StringUtils;
-import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
-import org.mrzhuyk.sqlfather.core.constant.CommonConstant;
 import org.mrzhuyk.sqlfather.core.dto.DeleteRequest;
 import org.mrzhuyk.sqlfather.core.entity.Result;
 import org.mrzhuyk.sqlfather.core.enums.MockTypeEnum;
@@ -19,14 +15,10 @@ import org.mrzhuyk.sqlfather.core.exception.ErrorEnum;
 import org.mrzhuyk.sqlfather.core.generator.GeneratorFacade;
 import org.mrzhuyk.sqlfather.dict.dto.DictAddRequest;
 import org.mrzhuyk.sqlfather.dict.dto.DictQueryRequest;
-import org.mrzhuyk.sqlfather.dict.dto.DictUpdateRequest;
 import org.mrzhuyk.sqlfather.dict.enums.ReviewStatusEnum;
 import org.mrzhuyk.sqlfather.dict.po.Dict;
 import org.mrzhuyk.sqlfather.dict.service.DictService;
-import org.mrzhuyk.sqlfather.rabbitmq.RabbitmqService;
-import org.mrzhuyk.sqlfather.rabbitmq.config.RabbitmqConfig;
 import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
-import org.mrzhuyk.sqlfather.sql.po.User;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.GenerateVO;
 import org.mrzhuyk.sqlfather.sql.vo.UserVO;
@@ -36,7 +28,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,9 +41,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/dict")
 public class DictController {
-    
     private static final String REDIS_PREFIX_KEY = "dict:public:"; // 公开数据缓存
     
+
     private static final SecureRandom random = new SecureRandom();
     
     @Resource
@@ -65,13 +56,10 @@ public class DictController {
     @Resource
     UserClient userClient;
     
-    @Resource
-    RabbitmqService rabbitmqService;
-    
     /**
      * 添加词库
-     * @param dictAddRequest
-     * @return
+     * @param dictAddRequest 添加的实体
+     * @return 返回id
      */
     @ApiOperation("添加词库")
     @PostMapping("/add")
@@ -94,8 +82,8 @@ public class DictController {
     
     /**
      * 根据id获取词库数据
-     * @param id
-     * @return
+     * @param id 词库数据的id
+     * @return 返回词库对象
      */
     @ApiOperation("根据id获取词库")
     @GetMapping("/get")
@@ -110,8 +98,8 @@ public class DictController {
     
     /**
      * 删除词库
-     * @param deleteRequest
-     * @return
+     * @param deleteRequest 包含删除词库的id
+     * @return 返回是否成功删除
      */
     @ApiOperation("删除词库")
     @PostMapping("/delete")
@@ -140,50 +128,9 @@ public class DictController {
     
     
     /**
-     * 更新词库，管理员权限
-     * @param dictUpdateRequest
-     * @return
-     */
-    @AuthCheck(mustRole = "admin")
-    @ApiOperation("更新词库，管理员权限")
-    @PostMapping("/update")
-    public Result<Boolean> updateDict(@RequestBody DictUpdateRequest dictUpdateRequest) {
-        if (dictUpdateRequest == null || dictUpdateRequest.getId() <= 0) {
-            throw new BizException(ErrorEnum.PARAMS_ERROR);
-        }
-        Dict dict = new Dict();
-        BeanUtils.copyProperties(dictUpdateRequest,dict);
-        // 参数校验
-        dictService.validAndHandleDict(dict, false);
-        long id = dictUpdateRequest.getId();
-        // 判断是否存在
-        Dict oldDict = dictService.getById(id);
-        if (oldDict == null) {
-            throw new BizException(ErrorEnum.NOT_FOUND_ERROR);
-        }
-        boolean res = dictService.updateById(dict);
-        redisClear(); // 清除缓存
-        return Result.success(res);
-    }
-    
-    
-    /**
-     * 获取列表，管理员权限
-     * @param dictQueryRequest
-     * @return
-     */
-    @ApiOperation("获取列表，管理员权限")
-    @AuthCheck(mustRole = "admin")
-    @GetMapping("/list")
-    public Result<List<Dict>> listDict(DictQueryRequest dictQueryRequest) {
-        List<Dict> dictList = dictService.list(getQueryWrapper(dictQueryRequest));
-        return Result.success(dictList);
-    }
-    
-    /**
-     * 获取列表分页
-     * @param dictQueryRequest
-     * @return
+     * 获取列表分页，公开词库
+     * @param dictQueryRequest 带分页的查询
+     * @return 返回词库分页
      */
     @ApiOperation("获取列表分页")
     @GetMapping("/list/page")
@@ -197,10 +144,11 @@ public class DictController {
         
         // 走缓存
         String key = REDIS_PREFIX_KEY + StringUtils.joinWith(":","list",current,size);
+        @SuppressWarnings("unchecked")
         Page<Dict> dictPage=(Page<Dict>)redisTemplate.opsForValue().get(key);
         if (dictPage==null) {
             dictPage = dictService.page(new Page<>(current, size),
-                getQueryWrapper(dictQueryRequest));
+                dictService.getQueryWrapper(dictQueryRequest));
             redisTemplate.opsForValue().set(key,dictPage,600+ random.nextInt(100), TimeUnit.SECONDS);
         }
         
@@ -209,23 +157,14 @@ public class DictController {
         return Result.success(dictPage);
     }
     
-    @ApiOperation("清除缓存")
-    @GetMapping("/redis/clear")
-    public Result<Boolean> redis() {
-        redisClear();
-        return Result.success(true);
-    }
-    
-    public void redisClear() {
-        rabbitmqService.send(REDIS_PREFIX_KEY, RabbitmqConfig.TOPIC_EXCHANGE_NAME, RabbitmqConfig.ROUTING_KEY);
-    }
+
     
     
     /**
      * 获取当前用户可选的列表（只返回 id 和名称）
      *  公开的词库和个人词库
-     * @param dictQueryRequest
-     * @return
+     * @param dictQueryRequest 查询实体，只用到用户id
+     * @return 返回词库实体列表
      */
     @ApiOperation("获取当前用户可选的列表（只返回 id 和名称）")
     @GetMapping("/my/list")
@@ -237,7 +176,7 @@ public class DictController {
         final String[] fields = new String[]{"id", "name"};
         // 先查询通过审核的(公开)
         dictQueryRequest.setReviewStatus(ReviewStatusEnum.PASS.getValue());
-        QueryWrapper<Dict> queryWrapper = getQueryWrapper(dictQueryRequest);
+        QueryWrapper<Dict> queryWrapper = dictService.getQueryWrapper(dictQueryRequest);
         queryWrapper.select(fields);
         List<Dict> dictList = dictService.list(queryWrapper);
         
@@ -261,8 +200,9 @@ public class DictController {
     
     /**
      * 获取当前用户可选的列表分页
-     * @param dictQueryRequest
-     * @return
+     *  公开的词库和个人词库
+     * @param dictQueryRequest 查询实体，只用到用户id
+     * @return 返回词库实体分页
      */
     @ApiOperation("获取当前用户可选的列表分页")
     @GetMapping("/my/list/page")
@@ -278,7 +218,7 @@ public class DictController {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         // 获取用户的和已经过审的
-        QueryWrapper<Dict> queryWrapper = getQueryWrapper(dictQueryRequest);
+        QueryWrapper<Dict> queryWrapper = dictService.getQueryWrapper(dictQueryRequest);
         queryWrapper.eq("userId", loginUserVo.getId())
             .or()
             .eq("reviewStatus", ReviewStatusEnum.PASS.getValue());
@@ -288,9 +228,8 @@ public class DictController {
     
     /**
      * 分页获取当前用户创建的资源列表
-     *
-     * @param dictQueryRequest
-     * @return
+     * @param dictQueryRequest 使用到用户id
+     * @return 返回词库实体分页
      */
     @ApiOperation("分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
@@ -307,16 +246,16 @@ public class DictController {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
         Page<Dict> dictPage = dictService.page(new Page<>(current, size),
-            getQueryWrapper(dictQueryRequest));
+            dictService.getQueryWrapper(dictQueryRequest));
         return Result.success(dictPage);
     }
     
     /**
-     * 根据词典创建表，根据表返回所有生成内容
-     * @param id
-     * @return
+     * 根据词库创建表，根据表返回所有生成内容
+     * @param id 词库id
+     * @return 返回生成内容实体
      */
-    @ApiOperation("词典创建表，返回所有生成内容")
+    @ApiOperation("词库创建表，返回所有生成内容")
     @PostMapping("/generate/sql")
     public Result<GenerateVO> generateCreateSql(@RequestBody long id) {
         if (id < 0) {
@@ -331,7 +270,6 @@ public class DictController {
         String name = dict.getName();
         tableSchema.setTableName("dict");
         tableSchema.setTableComment(name);
-        List<TableSchema.Field> fieldList = new ArrayList<>();
         
         TableSchema.Field idField = new TableSchema.Field();
         idField.setFieldName("id");
@@ -350,6 +288,7 @@ public class DictController {
         //dataField.setMockParams(String.valueOf(id));
         dataField.setMockParams(dict.getContent());
         
+        List<TableSchema.Field> fieldList = new ArrayList<>();
         fieldList.add(idField);
         fieldList.add(dataField);
         tableSchema.setFieldList(fieldList);
@@ -359,30 +298,4 @@ public class DictController {
     
     
     
-    /**
-     * 获取查询包装类
-     *  name和content模糊查询，sortField排序
-     * @param dictQueryRequest
-     * @return
-     */
-    private QueryWrapper<Dict> getQueryWrapper(DictQueryRequest dictQueryRequest) {
-        if (dictQueryRequest == null) {
-            throw new BizException(ErrorEnum.PARAMS_ERROR, "请求参数为空");
-        }
-        Dict dictQuery = new Dict();
-        BeanUtils.copyProperties(dictQueryRequest, dictQuery);
-        String sortField = dictQueryRequest.getSortField(); // 排序字段
-        String sortOrder = dictQueryRequest.getSortOrder(); // 顺序
-        String name = dictQuery.getName();
-        String content = dictQuery.getContent();
-        // name、content 需支持模糊搜索
-        dictQuery.setName(null);
-        dictQuery.setContent(null);
-        
-        QueryWrapper<Dict> queryWrapper = new QueryWrapper<>(dictQuery);
-        queryWrapper.like(StringUtils.isNotBlank(name), "name", name);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
-        return queryWrapper;
-    }
 }
