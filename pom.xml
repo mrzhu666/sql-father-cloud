@@ -23,9 +23,12 @@
         <module>sql-father-service</module>
         <module>sql-father-modules</module>
     </modules>
+
     <properties>
         <java.version>1.8</java.version>
+
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -51,6 +54,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>4.5.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- 这里引入最新的SpringCloud依赖 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
