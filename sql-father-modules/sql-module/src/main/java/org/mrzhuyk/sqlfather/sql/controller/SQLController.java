@@ -2,8 +2,8 @@ package org.mrzhuyk.sqlfather.sql.controller;
 
 
 import com.alibaba.excel.EasyExcel;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-@Api(tags = "sql生成服务")
+@Tag(name = "sql生成服务")
 @RestController
 @Slf4j
 @RequestMapping("/sql")
@@ -59,7 +60,7 @@ public class SQLController {
     /**
      * 由表概要生成所有内容
      */
-    @ApiOperation("表所有内容生成")
+    @Operation(summary = "表所有内容生成")
     @PostMapping("/generate/schema")
     public Result<GenerateVO> generateBySchema(@RequestBody TableSchema tableSchema) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
@@ -90,7 +91,7 @@ public class SQLController {
      * 根据输入的名称，自动导入可能的字段，即自动填充字段
      * 字段服务传入参数
      */
-    @ApiOperation("智能填充")
+    @Operation(summary = "智能填充")
     @PostMapping("/get/schema/auto")
     public Result<TableSchema> getSchemaByAuto(@RequestBody GenerateByAutoRequest autoRequest) {
         if (autoRequest == null || StringUtils.isBlank(autoRequest.getContent())) {
@@ -110,7 +111,7 @@ public class SQLController {
     /**
      * 根据sql语句生成表概要
      */
-    @ApiOperation("根据sql语句生成表概要")
+    @Operation(summary = "根据sql语句生成表概要")
     @PostMapping("/get/schema/sql")
     public Result<TableSchema> getSchemaBySQL(@RequestBody GenerateBySqlRequest sqlRequest) {
         if (sqlRequest == null || StringUtils.isBlank(sqlRequest.getSql())) {
@@ -123,7 +124,7 @@ public class SQLController {
     /**
      * 根据excel生成表概要
      */
-    @ApiOperation("根据excel生成表概要")
+    @Operation(summary = "根据excel生成表概要")
     @PostMapping("/get/schema/excel")
     public Result<TableSchema> getSchemaByExcel(MultipartFile file) {
         return Result.success(TableSchemaBuilder.buildFromExcel(file));
@@ -133,12 +134,12 @@ public class SQLController {
     /**
      * 下载模拟数据excel
      */
-    @ApiOperation("下载模拟数据excel")
+    @Operation(summary = "下载模拟数据excel")
     @PostMapping("download/data/excel")
-    public void downloadDataExcel(@RequestBody GenerateVO generateVO, HttpServletResponse response) {
+    public void downloadDataExcel(@RequestBody GenerateVO generateVO, HttpServletResponse response) throws IOException {
         TableSchema tableSchema = generateVO.getTableSchema();
         String tableName = tableSchema.getTableName();
-        try {
+        //try {
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setCharacterEncoding("utf-8");
             // 这里 URLEncoder.encode 可以防止中文乱码
@@ -164,11 +165,11 @@ public class SQLController {
                 .head(headList)
                 .sheet(tableName + "表")
                 .doWrite(dataList);
-        } catch (Exception e) {
-            // 重置response
-            response.reset();
-            throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR, "下载失败");
-        }
+        //} catch (Exception e) {
+        //    // 重置response
+        //    response.reset();
+        //    throw new BizException(ErrorEnum.INTERNAL_SERVER_ERROR, "下载失败");
+        //}
     }
     
     
