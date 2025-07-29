@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
@@ -35,7 +35,7 @@ import java.util.List;
 
 
 @Slf4j
-@Api("字段服务")
+@Tag(name = "字段服务")
 @RestController
 @RequestMapping("/field_info")
 public class FieldController {
@@ -52,7 +52,7 @@ public class FieldController {
     /**
      * 添加字段
      */
-    @ApiOperation("添加字段")
+    @Operation(summary = "添加字段")
     @PostMapping("/add")
     public Result<Long> addFieldInfo(@RequestBody FieldInfoAddRequest fieldInfoAddRequest) {
         if (fieldInfoAddRequest == null) {
@@ -71,7 +71,7 @@ public class FieldController {
         return Result.success(fieldInfo.getId());
     }
     
-    @ApiOperation("批量添加")
+    @Operation(summary = "批量添加")
     @PostMapping("/batch_add")
     public Result<Boolean> batchAddFieldInfo(@RequestBody List<TableSchema.Field> fieldList) {
         if (fieldList == null || fieldList.isEmpty()) {
@@ -89,7 +89,7 @@ public class FieldController {
     /**
      * 删除
      */
-    @ApiOperation("管理员删除")
+    @Operation(summary = "管理员删除")
     @PostMapping("/delete")
     public Result<Boolean> deleteFieldInfo(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
@@ -113,7 +113,7 @@ public class FieldController {
     /**
      * 更新（仅管理员）
      */
-    @ApiOperation("更新字段，仅管理员")
+    @Operation(summary = "更新字段，仅管理员")
     @PostMapping("/update")
     @AuthCheck(mustRole = "admin")
     public Result<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
@@ -137,7 +137,7 @@ public class FieldController {
     /**
      * 根据 id 获取
      */
-    @ApiOperation("获取字段")
+    @Operation(summary = "获取字段")
     @GetMapping("/get")
     public Result<FieldInfo> getFieldInfoById(long id) {
         if (id <= 0) {
@@ -150,7 +150,7 @@ public class FieldController {
     /**
      * 获取列表（仅管理员可使用）
      */
-    @ApiOperation("获取列表（仅管理员可使用）")
+    @Operation(summary = "获取列表（仅管理员可使用）")
     @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
     public Result<List<FieldInfo>> listFieldInfo(FieldInfoQueryRequest fieldInfoQueryRequest) {
@@ -161,7 +161,7 @@ public class FieldController {
     /**
      * 分页获取列表
      */
-    @ApiOperation("分页获取列表")
+    @Operation(summary = "分页获取列表")
     @GetMapping("/list/page")
     public Result<Page<FieldInfo>> listFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
@@ -182,7 +182,7 @@ public class FieldController {
     /**
      * 获取当前用户可选的全部资源列表（只返回 id 和名称）
      */
-    @ApiOperation("获取当前用户可选的全部资源列表（只返回 id 和名称）")
+    @Operation(summary = "获取当前用户可选的全部资源列表（只返回 id 和名称）")
     @GetMapping("/my/list")
     public Result<List<FieldInfo>> listMyFieldInfo(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
@@ -206,7 +206,7 @@ public class FieldController {
     /**
      * 分页获取当前用户可选的资源列表
      */
-    @ApiOperation("分页获取当前用户可选的资源列表")
+    @Operation(summary = "分页获取当前用户可选的资源列表")
     @GetMapping("/my/list/page")
     public Result<Page<FieldInfo>> listMyFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
@@ -235,7 +235,7 @@ public class FieldController {
     /**
      * 分页获取当前用户创建的资源列表
      */
-    @ApiOperation("分页获取当前用户创建的资源列表")
+    @Operation(summary = "分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
     public Result<Page<FieldInfo>> listMyAddFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
         if (fieldInfoQueryRequest == null) {
@@ -260,7 +260,7 @@ public class FieldController {
     /**
      * 生成创建字段的 SQL
      */
-    @ApiOperation("生成创建字段的 SQL")
+    @Operation(summary = "生成创建字段的 SQL")
     @PostMapping("/generate/sql")
     public Result<String> generateCreateSql(@RequestBody long id) {
         if (id <= 0) {
@@ -317,7 +317,7 @@ public class FieldController {
     /**
      * 根据提供的词语模糊查询字段信息
      */
-    @ApiOperation("模糊查询字段信息")
+    @Operation(summary = "模糊查询字段信息")
     @GetMapping("/get/schema/auto")
     public Result<List<FieldInfo>> getFieldByAuto(@RequestParam("words") String[] words) {
         // 根据单词去词库里匹配列信息，未匹配到的使用默认值
