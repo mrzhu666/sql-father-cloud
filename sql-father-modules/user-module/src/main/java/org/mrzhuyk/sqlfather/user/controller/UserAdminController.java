@@ -4,8 +4,8 @@ package org.mrzhuyk.sqlfather.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
 import org.mrzhuyk.sqlfather.core.dto.DeleteRequest;
@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api("用户服务（管理员）")
+@Tag(name = "用户服务（管理员）")
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -37,7 +37,7 @@ public class UserAdminController {
     /**
      * 创建用户
      */
-    @ApiOperation("创建用户（管理员）")
+    @Operation(summary = "创建用户（管理员）")
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
@@ -56,7 +56,7 @@ public class UserAdminController {
     /**
      * 删除用户
      */
-    @ApiOperation("删除用户（管理员）")
+    @Operation(summary = "删除用户（管理员）")
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest) {
@@ -74,7 +74,7 @@ public class UserAdminController {
     /**
      * 更新用户
      */
-    @ApiOperation("更新用户（管理员）")
+    @Operation(summary = "更新用户（管理员）")
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
@@ -93,7 +93,7 @@ public class UserAdminController {
     /**
      * 根据 id 获取用户
      */
-    @ApiOperation("根据id获取用户（管理员）")
+    @Operation(summary = "根据id获取用户（管理员）")
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<UserVO> getUserById(Integer id) {
@@ -109,7 +109,7 @@ public class UserAdminController {
     /**
      * 获取用户列表
      */
-    @ApiOperation("获取用户列表（管理员）")
+    @Operation(summary = "获取用户列表（管理员）")
     @GetMapping("/list")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<List<UserVO>> listUser(UserQueryRequest userQueryRequest) {
@@ -134,7 +134,7 @@ public class UserAdminController {
     /**
      * 分页获取用户列表
      */
-    @ApiOperation("分页获取用户列表（管理员）")
+    @Operation(summary = "分页获取用户列表（管理员）")
     @GetMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public Result<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest) {

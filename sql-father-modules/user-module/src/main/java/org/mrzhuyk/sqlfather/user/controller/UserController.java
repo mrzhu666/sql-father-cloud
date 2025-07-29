@@ -1,7 +1,7 @@
 package org.mrzhuyk.sqlfather.user.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.entity.Result;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-@Api(tags = "用户服务")
+@Tag(name = "用户服务")
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -33,7 +33,7 @@ public class UserController {
      * @param userRegisterRequest 注册请求参数
      * @return 返回用户ID
      */
-    @ApiOperation("注册用户")
+    @Operation(summary = "注册用户")
     @PostMapping("/register")
     public Result<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
@@ -56,7 +56,7 @@ public class UserController {
      * @param userLoginRequest 登录请求参数
      * @return 返回用户信息
      */
-    @ApiOperation("用户登录")
+    @Operation(summary = "用户登录")
     @PostMapping("/login")
     public Result<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
@@ -75,7 +75,7 @@ public class UserController {
     /**
      * 用户注销
      */
-    @ApiOperation("用户注销")
+    @Operation(summary = "用户注销")
     @PostMapping("/logout")
     public Result<Boolean> userLogout(HttpServletRequest request) {
         if (request == null) {
@@ -88,7 +88,7 @@ public class UserController {
     /**
      * 获取当前登录用户
      */
-    @ApiOperation("获取当前登录用户")
+    @Operation(summary = "获取当前登录用户")
     @GetMapping("/get/login")
     public Result<UserVO> getLoginUser(HttpServletRequest request) {
         log.info("用户接口：/get/login");
