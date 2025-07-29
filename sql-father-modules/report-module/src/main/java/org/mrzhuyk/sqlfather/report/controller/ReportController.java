@@ -1,11 +1,9 @@
 package org.mrzhuyk.sqlfather.report.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
@@ -29,12 +27,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
 @Slf4j
-@Api("举报服务")
+@Tag(name = "举报服务")
 @RestController
 @RequestMapping("/report")
 public class ReportController {
@@ -53,7 +50,7 @@ public class ReportController {
      * @param reportAddRequest
      * @return
      */
-    @ApiOperation("添加举报")
+    @Operation(summary = "添加举报")
     @PostMapping("/add")
     public Result<Long> addReport(@RequestBody ReportAddRequest reportAddRequest) {
         if (reportAddRequest == null) {
@@ -86,7 +83,7 @@ public class ReportController {
      * @param deleteRequest
      * @return
      */
-    @ApiOperation("删除举报")
+    @Operation(summary = "删除举报")
     @PostMapping("/delete")
     public Result<Boolean> deleteReport(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
@@ -115,7 +112,7 @@ public class ReportController {
      * @param reportUpdateRequest
      * @return
      */
-    @ApiOperation("更新举报(仅管理员)")
+    @Operation(summary = "更新举报(仅管理员)")
     @PostMapping("/update")
     @AuthCheck(mustRole = "admin")
     public Result<Boolean> updateReport(@RequestBody ReportUpdateRequest reportUpdateRequest) {
@@ -140,7 +137,7 @@ public class ReportController {
      * @param id
      * @return
      */
-    @ApiOperation("根据id获取")
+    @Operation(summary = "根据id获取")
     @GetMapping("/get")
     public Result<Report> getReportById(long id) {
         if (id <= 0) {
@@ -156,7 +153,7 @@ public class ReportController {
      * @param reportQueryRequest
      * @return
      */
-    @ApiOperation("获取列表（仅管理员可使用）")
+    @Operation(summary = "获取列表（仅管理员可使用）")
     @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
     public Result<List<Report>> listReport(ReportQueryRequest reportQueryRequest) {
@@ -174,7 +171,7 @@ public class ReportController {
      * @param reportQueryRequest
      * @return
      */
-    @ApiOperation("获取用户举报")
+    @Operation(summary = "获取用户举报")
     @GetMapping("/list/page")
     public Result<Page<Report>> listReportByPage(ReportQueryRequest reportQueryRequest) {
         if (reportQueryRequest == null) {
