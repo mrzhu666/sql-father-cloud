@@ -3,8 +3,8 @@ package org.mrzhuyk.sqlfather.dict.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.dto.DeleteRequest;
@@ -36,7 +36,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Api(tags = "词库服务")
+@Tag(name = "词库服务")
 @Slf4j
 @RestController
 @RequestMapping("/dict")
@@ -61,7 +61,7 @@ public class DictController {
      * @param dictAddRequest 添加的实体
      * @return 返回id
      */
-    @ApiOperation("添加词库")
+    @Operation(summary = "添加词库")
     @PostMapping("/add")
     public Result<Long> addDict(@RequestBody DictAddRequest dictAddRequest) {
         if (dictAddRequest == null) {
@@ -85,7 +85,7 @@ public class DictController {
      * @param id 词库数据的id
      * @return 返回词库对象
      */
-    @ApiOperation("根据id获取词库")
+    @Operation(summary = "根据id获取词库")
     @GetMapping("/get")
     public Result<Dict> getDictById(@RequestParam("id") Long id) {
         if (id == null || id <= 0) {
@@ -101,7 +101,7 @@ public class DictController {
      * @param deleteRequest 包含删除词库的id
      * @return 返回是否成功删除
      */
-    @ApiOperation("删除词库")
+    @Operation(summary = "删除词库")
     @PostMapping("/delete")
     public Result<Boolean> deleteDict(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
@@ -132,7 +132,7 @@ public class DictController {
      * @param dictQueryRequest 带分页的查询
      * @return 返回词库分页
      */
-    @ApiOperation("获取列表分页")
+    @Operation(summary = "获取列表分页")
     @GetMapping("/list/page")
     public Result<Page<Dict>> listDictPage( DictQueryRequest dictQueryRequest) {
         long current = dictQueryRequest.getCurrent(); // 当前页
@@ -166,7 +166,7 @@ public class DictController {
      * @param dictQueryRequest 查询实体，只用到用户id
      * @return 返回词库实体列表
      */
-    @ApiOperation("获取当前用户可选的列表（只返回 id 和名称）")
+    @Operation(summary = "获取当前用户可选的列表（只返回 id 和名称）")
     @GetMapping("/my/list")
     public Result<List<Dict>> listMyDict(DictQueryRequest dictQueryRequest) {
         if (dictQueryRequest == null) {
@@ -204,7 +204,7 @@ public class DictController {
      * @param dictQueryRequest 查询实体，只用到用户id
      * @return 返回词库实体分页
      */
-    @ApiOperation("获取当前用户可选的列表分页")
+    @Operation(summary = "获取当前用户可选的列表分页")
     @GetMapping("/my/list/page")
     public Result<Page<Dict>> listMyDictPage(DictQueryRequest dictQueryRequest) {
         UserVO loginUserVo = userClient.getLoginUser();
@@ -231,7 +231,7 @@ public class DictController {
      * @param dictQueryRequest 使用到用户id
      * @return 返回词库实体分页
      */
-    @ApiOperation("分页获取当前用户创建的资源列表")
+    @Operation(summary = "分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
     public Result<Page<Dict>> listMyAddDictByPage(DictQueryRequest dictQueryRequest) {
         if (dictQueryRequest == null) {
@@ -255,7 +255,7 @@ public class DictController {
      * @param id 词库id
      * @return 返回生成内容实体
      */
-    @ApiOperation("词库创建表，返回所有生成内容")
+    @Operation(summary = "词库创建表，返回所有生成内容")
     @PostMapping("/generate/sql")
     public Result<GenerateVO> generateCreateSql(@RequestBody long id) {
         if (id < 0) {

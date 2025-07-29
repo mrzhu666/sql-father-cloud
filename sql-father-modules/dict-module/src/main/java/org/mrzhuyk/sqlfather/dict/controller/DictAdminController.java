@@ -1,7 +1,7 @@
 package org.mrzhuyk.sqlfather.dict.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
 import org.mrzhuyk.sqlfather.core.entity.Result;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Api(tags = "词库服务")
+@Tag(name = "词库服务")
 @Slf4j
 @RestController
 @RequestMapping("/dict")
@@ -39,7 +39,7 @@ public class DictAdminController {
      * @return 返回是否更新成功
      */
     @AuthCheck(mustRole = "admin")
-    @ApiOperation("更新词库，管理员权限")
+    @Operation(summary = "更新词库，管理员权限")
     @PostMapping("/update")
     public Result<Boolean> updateDict(@RequestBody DictUpdateRequest dictUpdateRequest) {
         if (dictUpdateRequest == null || dictUpdateRequest.getId() <= 0) {
@@ -65,7 +65,7 @@ public class DictAdminController {
      * @param dictQueryRequest 根据name和content模糊查询，sortField排序
      * @return 返回词库实体列表
      */
-    @ApiOperation("获取列表，管理员权限")
+    @Operation(summary = "获取列表，管理员权限")
     @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
     public Result<List<Dict>> listDict(DictQueryRequest dictQueryRequest) {
@@ -75,7 +75,7 @@ public class DictAdminController {
     
     
     
-    @ApiOperation("清除缓存")
+    @Operation(summary = "清除缓存")
     @GetMapping("/redis/clear")
     public Result<Boolean> redis() {
         redisClear();
