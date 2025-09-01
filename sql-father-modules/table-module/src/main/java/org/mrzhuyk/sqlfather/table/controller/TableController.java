@@ -2,11 +2,18 @@ package org.mrzhuyk.sqlfather.table.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springdoc.api.annotations.ParameterObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotations.DynamicParameters;
 import com.google.gson.Gson;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mrzhuyk.sqlfather.core.annotation.AuthCheck;
@@ -21,19 +28,22 @@ import org.mrzhuyk.sqlfather.sql.constant.UserConstant;
 import org.mrzhuyk.sqlfather.sql.schema.TableSchema;
 import org.mrzhuyk.sqlfather.sql.vo.UserVO;
 import org.mrzhuyk.sqlfather.table.dto.TableInfoAddRequest;
+import org.mrzhuyk.sqlfather.table.dto.TableInfoQueryPageRequest;
 import org.mrzhuyk.sqlfather.table.dto.TableInfoQueryRequest;
 import org.mrzhuyk.sqlfather.table.dto.TableInfoUpdateRequest;
 import org.mrzhuyk.sqlfather.table.po.TableInfo;
 import org.mrzhuyk.sqlfather.table.service.TableInfoService;
 import org.mrzhuyk.sqlfather.user.feign.UserClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Slf4j
-@Api("表服务")
+@Tag(name = "表服务")
 @RestController
 @RequestMapping("/table_info")
 public class TableController {
@@ -50,7 +60,7 @@ public class TableController {
     /**
      * 创建表
      */
-    @ApiOperation("创建表请求")
+    @Operation(summary = "创建表请求")
     @PostMapping("/add")
     public Result<Long> addTableInfo(@RequestBody TableInfoAddRequest tableInfoAddRequest) {
         if (tableInfoAddRequest == null) {
@@ -72,7 +82,7 @@ public class TableController {
      * 删除
      *  仅限本人或管理员
      */
-    @ApiOperation("删除表，仅限本人或管理员")
+    @Operation(summary = "删除表，仅限本人或管理员")
     @PostMapping("/delete")
     public Result<Boolean> deleteTableInfo(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId()<=0) {
@@ -94,7 +104,7 @@ public class TableController {
      * 更新（仅管理员）
      *  用于更新审核状态
      */
-    @ApiOperation("更新（仅管理员）")
+    @Operation(summary = "更新（仅管理员）")
     @PostMapping("/update")
     @AuthCheck(mustRole = "admin")
     public Result<Boolean> updateTableInfo(@RequestBody TableInfoUpdateRequest tableInfoUpdateRequest) {
@@ -117,7 +127,7 @@ public class TableController {
     /**
      * 根据 id 获取
      */
-    @ApiOperation("根据id获取")
+    @Operation(summary = "根据id获取")
     @GetMapping("/get")
     public Result<TableInfo> getTableInfoById(Long id) {
         if (id == null || id <= 0) {
@@ -133,7 +143,7 @@ public class TableController {
     /**
      * 获取列表（仅管理员可使用）
      */
-    @ApiOperation("获取列表（仅管理员可使用）")
+    @Operation(summary = "获取列表（仅管理员可使用）")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     @GetMapping("/list")
     public Result<List<TableInfo>> listTableInfo(TableInfoQueryRequest tableInfoQueryRequest) {
@@ -141,15 +151,27 @@ public class TableController {
         return Result.success(list);
     }
     
+    
+    @Operation(summary = "测试接口")
+    @GetMapping("/test")
+    public Result<Integer> test(@RequestParam(value = "id", required = false,defaultValue = "1") Integer id) {
+        return Result.success(id);
+    }
+    
+    
     /**
      * 分页获取列表
      */
-    @ApiOperation("分页获取列表")
-    @GetMapping("/list/page")
-    public Result<Page<TableInfo>> listTableInfoByPage(TableInfoQueryRequest tableInfoQueryRequest){
-        if (tableInfoQueryRequest == null) {
+    @Operation(summary = "分页获取列表")
+    @GetMapping(value = "/list/page", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Result<Page<TableInfo>> listTableInfoByPage(@ParameterObject TableInfoQueryPageRequest tableInfoQueryPageRequest) {
+        if (tableInfoQueryPageRequest == null) {
             throw new BizException(ErrorEnum.PARAMS_ERROR);
         }
+        
+        TableInfoQueryRequest tableInfoQueryRequest= new TableInfoQueryRequest();
+        BeanUtils.copyProperties(tableInfoQueryPageRequest, tableInfoQueryRequest);
+        
         long current = tableInfoQueryRequest.getCurrent();
         long pageSize = tableInfoQueryRequest.getPageSize();
         if (pageSize > 20) {
@@ -164,7 +186,7 @@ public class TableController {
     /**
      * 获取当前用户可选的全部资源列表（只返回 id 和名称）
      */
-    @ApiOperation("获取当前用户可选的全部资源列表（只返回 id 和名称）")
+    @Operation(summary = "获取当前用户可选的全部资源列表（只返回 id 和名称）")
     @GetMapping("/my/list")
     public Result<List<TableInfo>> listMyTableInfo(TableInfoQueryRequest tableInfoQueryRequest) {
         if (tableInfoQueryRequest == null) {
@@ -192,7 +214,7 @@ public class TableController {
     /**
      * 分页获取当前用户可选的资源列表
      */
-    @ApiOperation("分页获取当前用户可选的资源列表")
+    @Operation(summary = "分页获取当前用户可选的资源列表")
     @GetMapping("/my/list/page")
     public Result<Page<TableInfo>> listMyTableInfoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
         if (tableInfoQueryRequest == null) {
@@ -219,7 +241,7 @@ public class TableController {
     /**
      * 分页获取当前用户创建的资源列表
      */
-    @ApiOperation("分页获取当前用户创建的资源列表")
+    @Operation(summary = "分页获取当前用户创建的资源列表")
     @GetMapping("/my/add/list/page")
     public Result<Page<TableInfo>> listMyAddTableInfoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
         if (tableInfoQueryRequest == null) {
@@ -251,7 +273,7 @@ public class TableController {
     /**
      * 生成创建表的 SQL
      */
-    @ApiOperation("生成创建表的 SQL")
+    @Operation(summary = "生成创建表的 SQL")
     @PostMapping("/generate/sql")
     public Result<String> generateCreateSql(@RequestBody Long id) {
         if (id == null || id <= 0) {
