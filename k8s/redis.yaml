@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: sql-father
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REDIS_PASSWORD
+              value: "123456"
+          ports:
+            - name: redis
+              containerPort: 6379
+#          command: ["redis-server", "--requirepass", "123456"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: sql-father
+  labels:
+    app: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379

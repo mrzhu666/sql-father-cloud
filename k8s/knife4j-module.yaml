@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knife4j-module
+  namespace: sql-father
+  labels:
+    app: knife4j-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: knife4j-module
+  template:
+    metadata:
+      labels:
+        app: knife4j-module
+    spec:
+      containers:
+        - name: knife4j-module
+          image: mrzhu66/knife4j-module:v1.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8499
+#          resources:
+#            requests:
+#              memory: "256Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "512Mi"
+#              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: knife4j-module-service
+  namespace: sql-father
+  labels:
+    app: knife4j-module
+spec:
+  selector:
+    app: knife4j-module
+  ports:
+    - name: http
+      port: 8499
+      targetPort: 8499
+  type: ClusterIP

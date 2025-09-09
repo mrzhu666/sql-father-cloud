@@ -5,7 +5,7 @@ FROM openjdk:8-jdk-alpine
 WORKDIR /app
 
 # 将 jar 包添加到工作目录，比如 target/yuoj-backend-user-service-0.0.1-SNAPSHOT.jar
-ADD target/user-module-1.0.0.jar .
+ADD target/user-module-1.0.2.jar .
 
 # 暴露端口
 EXPOSE 8501
@@ -18,6 +18,6 @@ ENTRYPOINT ["java", \
             "-Dnacos.common.processors=2", \
             "-Dnacos.remote.client.grpc.pool.core.size=3", \
             "-Dnacos.remote.client.grpc.pool.max.size=3", \
-            "-jar","/app/user-module-1.0.0.jar", \
+            "-jar","/app/user-module-1.0.2.jar", \
             "--spring.profiles.active=dev", \
             "--server.tomcat.threads.max=4"]

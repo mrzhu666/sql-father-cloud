@@ -5,12 +5,12 @@ FROM openjdk:8-jdk-alpine
 WORKDIR /app
 
 # 将 jar 包添加到工作目录，比如 target/yuoj-backend-user-service-0.0.1-SNAPSHOT.jar
-ADD target/gateway-module-1.0.0.jar .
+ADD target/gateway-module-1.0.1.jar .
 
 # 暴露端口
 EXPOSE 8500
 
 # 启动命令
 ENTRYPOINT ["java", \
-            "-jar","/app/gateway-module-1.0.0.jar", \
+            "-jar","/app/gateway-module-1.0.1.jar", \
             "--spring.profiles.active=dev"]

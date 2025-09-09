@@ -5,7 +5,7 @@ FROM openjdk:8-jdk-alpine
 WORKDIR /app
 
 # 将 jar 包添加到工作目录，比如 target/yuoj-backend-user-service-0.0.1-SNAPSHOT.jar
-ADD target/knife4j-module-1.0.0.jar .
+ADD target/knife4j-module-1.0.1.jar .
 
 # 暴露端口
 EXPOSE 8499
@@ -15,6 +15,6 @@ ENTRYPOINT ["java", \
             "-Xmx256M", \
             "-Xms64M", \
             "-Xss256k", \
-            "-jar","/app/knife4j-module-1.0.0.jar", \
+            "-jar","/app/knife4j-module-1.0.1.jar", \
             "--spring.profiles.active=dev", \
             "--server.tomcat.threads.max=4"]

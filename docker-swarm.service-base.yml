@@ -2,7 +2,7 @@
 version: '3'
 services:
   knife4j-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-knife4j-module
+    image: mrzhu66/knife4j-module:v1.0.1
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/knife4j-module
       dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   gateway-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-gateway-module
+    image: mrzhu66/gateway-module:v1.0.1
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/gateway-module
       dockerfile: Dockerfile

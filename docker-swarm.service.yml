@@ -1,7 +1,7 @@
 version: '3'
 services:
   user-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-user-module
+    image: mrzhu66/user-module:v1.0.2
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/user-module
       dockerfile: Dockerfile
@@ -14,7 +14,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   sql-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-sql-module
+    image: mrzhu66/sql-module:v1.0.0
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/sql-module
       dockerfile: Dockerfile
@@ -27,7 +27,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   field-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-field-module
+    image: mrzhu66/field-module:v1.0.0
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/field-module
       dockerfile: Dockerfile
@@ -40,7 +40,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   dict-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-dict-module
+    image: mrzhu66/dict-module:v1.0.0
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/dict-module
       dockerfile: Dockerfile
@@ -53,7 +53,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   report-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-report-module
+    image: mrzhu66/report-module:v1.0.0
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/report-module
       dockerfile: Dockerfile
@@ -66,7 +66,7 @@ services:
         constraints: [ node.labels.role==notebook_wsl ]
 
   table-module:
-    image: notebook-wsl-tailscale:5000/sql-father-cloud-table-module
+    image: mrzhu66/table-module:v1.0.1
     build: # 服务的 Docker 构建文件位置
       context: ./sql-father-modules/table-module
       dockerfile: Dockerfile

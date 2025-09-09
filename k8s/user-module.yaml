@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-module
+  namespace: sql-father
+  labels:
+    app: user-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-module
+  template:
+    metadata:
+      labels:
+        app: user-module
+    spec:
+      containers:
+        - name: user-module
+          image: mrzhu66/user-module:v1.0.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8501
+#          resources:
+#            requests:
+#              memory: "256Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "512Mi"
+#              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-module-service
+  namespace: sql-father
+  labels:
+    app: user-module
+spec:
+  selector:
+    app: user-module
+  ports:
+    - name: http
+      port: 8501
+      targetPort: 8501
+  type: ClusterIP

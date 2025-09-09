@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: table-module
+  namespace: sql-father
+  labels:
+    app: table-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: table-module
+  template:
+    metadata:
+      labels:
+        app: table-module
+    spec:
+      containers:
+        - name: table-module
+          image: mrzhu66/table-module:v1.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8506
+#          resources:
+#            requests:
+#              memory: "256Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "512Mi"
+#              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: table-module-service
+  namespace: sql-father
+  labels:
+    app: table-module
+spec:
+  selector:
+    app: table-module
+  ports:
+    - name: http
+      port: 8506
+      targetPort: 8506
+  type: ClusterIP

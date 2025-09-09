@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-module
+  namespace: sql-father
+  labels:
+    app: gateway-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-module
+  template:
+    metadata:
+      labels:
+        app: gateway-module
+    spec:
+      containers:
+        - name: gateway-module
+          image: mrzhu66/gateway-module:v1.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8500
+#          resources:
+#            requests:
+#              memory: "256Mi"
+#              cpu: "250m"
+#            limits:
+#              memory: "512Mi"
+#              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-module-service
+  namespace: sql-father
+  labels:
+    app: gateway-module
+spec:
+  selector:
+    app: gateway-module
+  ports:
+    - name: http
+      port: 8500
+      targetPort: 8500
+  type: ClusterIP

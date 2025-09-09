@@ -1,0 +1,111 @@
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mysql-sc-hostpath
+provisioner: kubernetes.io/no-provisioner # 使用hostpath作为存储后端
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+# 使用hostpath，才需要手动创建PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-hostpath-0
+spec:
+  capacity:
+    storage: 1Gi # 创建时并不会验证实际有这么多空间
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain # 手动创建本地卷时，仅支持Retain
+  storageClassName: mysql-sc-hostpath # 匹配上面的metadata.name
+  local:
+    path: /home/sql-father-mysql # 必须在节点手动创建，使用root作为路径，会提示不存在
+  nodeAffinity: # 创建本地卷的必须字段，k8s会在匹配下面条件的节点上创建PV，如果没有匹配的节点，则引用的Pod和PV都会一直pending（通过describe可以查看原因）
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube # 使用节点的名称
+
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: sql-father
+type: Opaque  # 作用？
+data:
+  # root 密码为 "password"，使用 base64 编码: echo -n 'password' | base64
+  mysql-root-password: cGFzc3dvcmQ=
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-headless
+  namespace: sql-father
+spec:
+  selector:
+    app: sql-father
+  clusterIP: None
+  ports:
+    - port: 3307
+      targetPort: 3306
+      protocol: TCP
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: sql-father
+  labels:
+    app: title
+spec:
+  replicas: 1
+  serviceName: mysql-headless # 一定要和service的名称一样，不然pod的域名会解析失败
+  selector:
+    matchLabels:
+      app: sql-father
+  template:
+    metadata:
+      name: sql-father
+      labels:
+        app: sql-father
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7.43
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-pvc
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+      restartPolicy: Always
+  volumeClaimTemplates: # StatefulSet特有字段，配置每个Pod的卷需求（Pod创建时将自动创建一个名称包含pod序号的PVC，若已存在同名PVC则不会重复创建）
+    - metadata:
+        name: mysql-pvc
+        namespace: sql-father
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: mysql-sc-hostpath # 匹配上面的 StorageClass
+        resources:
+          requests:
+            storage: 200Mi
