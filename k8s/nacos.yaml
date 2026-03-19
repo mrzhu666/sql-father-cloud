@@ -123,7 +123,7 @@ spec:
             - name: PREFER_HOST_MODE
               value: "hostname"
             - name: NACOS_SERVERS
-              value: "nacos-0.nacos-headless.default.svc.cluster.local:8848"
+              value: "nacos-0.nacos-headless.sql-father.svc.cluster.local:8848"
             - name: MODE
               value: "standalone"
   selector:
