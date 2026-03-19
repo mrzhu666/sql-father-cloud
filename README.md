@@ -125,16 +125,28 @@ docker compose -f docker-swarm.service.yml up -d # 运行
 
 ## Swarm集群
 
+- maven打包
+
+```
+mvn clean package
+```
+
 - 创建网络
 
 ```bash
-docker network create --driver overlay --subnet=192.168.0.0/24 --gateway=192.168.0.254 mynetwork
+docker network create --driver overlay --subnet=192.167.2.0/24 --gateway=192.167.2.254 mynetwork
 ```
 
 - 环境运行
 
 ```bash
 docker stack deploy -c docker-swarm.env.yml sql-father-cloud
+```
+
+- 基础业务运行
+
+```bash
+docker stack deploy -c docker-swarm.service-base.yml sql-father-cloud
 ```
 
 - 业务镜像构建
@@ -152,6 +164,8 @@ docker stack deploy -c docker-swarm.service.yml sql-father-cloud
 
 
 # 项目结构
+
+
 
 ```
 sql-father-cloud
@@ -195,6 +209,8 @@ sql-father-cloud
 └── support
     └── support-service
 ```
+
+
 
 # 模块
 
@@ -264,6 +280,72 @@ TableSchemaBuilder 表概要生成器，里面`buildFromAuto`方法需要去查�
 
 
 
+
+
+## 核心流程（Mermaid）
+
+
+
+### 用户登录与分布式会话（Redis Session）
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as Gateway
+    participant U as user-module
+    participant Re as Redis(Session)
+
+    Note over U,Re: 启用 Spring Session Redis（全局共享会话）
+    C->>G: POST /user/login {账号, 密码}
+    G->>U: 路由到用户服务
+    U->>U: 校验凭证
+    U->>Re: 创建/更新会话数据
+    U-->>G: Set-Cookie: SESSION=... / 响应体
+    G-->>C: 登录成功，携带SESSION
+
+    C->>G: 后续请求（携带SESSION Cookie）
+    G->>U: 或其他业务服务
+    U->>Re: 读取会话，鉴权与鉴别用户
+    U-->>G: 业务响应
+    G-->>C: 返回结果
+```
+
+### SQL 生成核心流程（聚合字段/词典）
+```mermaid
+flowchart TD
+    A[Client 请求 /sql/** 提交表结构/选项] --> B[Gateway 路由到 sql-module]
+    B --> C[SQL Controller]
+    C --> D[调用 table-module<br/>获取表概要]
+    C --> E[调用 field-module<br/>获取字段列表]
+    C --> F[调用 dict-module<br/>获取词典内容]
+    D --> G[聚合表/字段/词典参数]
+    E --> G
+    F --> G
+    G --> H[Generator 工厂选择方言与算法]
+    H --> I[生成 SQL/实体/TS 接口 + Mock 数据]
+    I --> J[返回 GenerateVO]
+```
+
+### 词典变更的缓存与消息通知（RabbitMQ）
+```mermaid
+sequenceDiagram
+    autonumber
+    participant D as dict-module
+    participant DB as MySQL(dict)
+    participant MQ as RabbitMQ(redis 交换机)
+    participant C1 as sql/field/table 模块
+    participant Re as Redis(Cache/Session)
+
+    D->>DB: 更新/新增词典项
+    D->>MQ: 发布消息 routingKey: redis.dict
+    par 订阅并处理
+        MQ-->>C1: 投递词典变更消息
+        C1->>Re: 失效相关缓存键
+    and 可选重建
+        C1->>C1: 惰性重建或按需加载
+    end
+```
 
 
 # 数据备份

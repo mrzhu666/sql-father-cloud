@@ -74,13 +74,14 @@ public class SQLController {
                 // 异步批量远程调用
                 futures.add(CompletableFuture.runAsync(() -> {
                     log.info("generateBySchema - ThreadPool id:{} ",Thread.currentThread().getId());
+                    //设置当前任务的上下文
                     RequestContextHolder.setRequestAttributes(attributes);
                     Dict dictById = dictClient.getDictById(Long.parseLong(mockParams));
                     field.setMockParams(dictById.getContent());
                 }, executorService));
             }
         }
-        
+        //并行批量运行任务
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         
         return Result.success(GeneratorFacade.generateAll(tableSchema));
