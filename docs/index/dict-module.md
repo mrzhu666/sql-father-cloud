@@ -18,9 +18,24 @@ Spring Boot 启动类: org.mrzhuyk.sqlfather.dict.DictApplication
 
 ## 主要包结构
 
+```
+├── controller
+│   ├── DictAdminController.java
+│   └── DictController.java
+├── DictApplication.java
+└── message
+    └── Receiver.java
+```
+
 ## 关键API路径
 
+todo
+
 ## 依赖
+
+todo
+
+
 
 
 
