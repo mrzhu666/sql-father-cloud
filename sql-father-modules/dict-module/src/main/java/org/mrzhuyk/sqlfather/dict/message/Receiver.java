@@ -29,13 +29,20 @@ public class Receiver {
     @Resource
     RedisTemplate<String, Object> redisTemplate;
     
+    /**
+     * 消息队列异步删除缓存
+     * @param messageStr
+     * @param channel
+     * @param message
+     * @throws IOException
+     */
     @RabbitListener(queues = RabbitmqConfig.QUEUE_REDIS)
     public void receive(String messageStr, Channel channel, Message message) throws IOException {
         log.info("接收消息");
         // 获取消息id，存储到redis，防止重复消费
         String messageID = (String) message.getMessageProperties().getHeaders().get("spring_returned_message_correlation");
         try {
-            // 保存消息id到redis，缓存时间为10秒
+            // 保存消息id到redis，缓存时间为10秒。作用：防止重复消费。
             if (BooleanUtils.isTrue(redisTemplate.opsForValue().setIfAbsent(messageID, "0", 10, TimeUnit.SECONDS))) {
                 
                 //消费消息
